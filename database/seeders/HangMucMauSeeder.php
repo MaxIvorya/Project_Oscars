@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ChiHoi;
 use App\Models\HangMucMau;
 use Illuminate\Database\Seeder;
 
@@ -9,6 +10,7 @@ class HangMucMauSeeder extends Seeder
 {
     public function run(): void
     {
+        $chiHoiIds = ChiHoi::orderBy('ma_chi_hoi')->pluck('ma_chi_hoi')->values();
         $categories = [
             ['Phim hay nhất', 'phim'],
             ['Đạo diễn xuất sắc', 'nghe_si'],
@@ -40,7 +42,8 @@ class HangMucMauSeeder extends Seeder
             HangMucMau::create([
                 'ten_hang_muc' => $name,
                 'loai_hang_muc' => $type,
-                'la_toan_the' => true,
+                'la_toan_the' => $order === 0,
+                'ma_chi_hoi_mac_dinh' => $order === 0 ? null : $chiHoiIds[$order % max(1, $chiHoiIds->count())],
                 'thu_tu' => $order + 1,
                 'dang_su_dung' => true,
             ]);
