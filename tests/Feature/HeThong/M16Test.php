@@ -77,7 +77,7 @@ class M16Test extends TestCase
             'la_toan_the' => true,
         ]);
         $chiHoi = ChiHoi::create(['ten_chi_hoi' => 'Chi hội test']);
-        $taiKhoan = TaiKhoan::create([
+        $taiKhoan = TaiKhoan::forceCreate([
             'email' => 'member@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'member',
@@ -172,7 +172,7 @@ class M16Test extends TestCase
     public function test_ended_season_blocks_nomination_marking_and_deletion(): void
     {
         $chiHoi = ChiHoi::create(['ten_chi_hoi' => 'Chi hội đề cử']);
-        $taiKhoan = TaiKhoan::create([
+        $taiKhoan = TaiKhoan::forceCreate([
             'email' => 'ended-member@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'member',

@@ -8,8 +8,8 @@ use App\Models\MuaGiai;
 use App\Models\Phim;
 use App\Services\PhimService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -59,7 +59,11 @@ class PhimController extends Controller
     public function show(Phim $phim): View
     {
         Gate::authorize('view', $phim);
+        $phim->load(['muaGiai', 'nguoiDuyetChiHoi', 'nguoiDuyetHoiDong']);
 
-        return view('member.phim.show', compact('phim'));
+        return view('member.phim.show', [
+            'phim' => $phim,
+            'nhanTrangThai' => app(PhimService::class)->nhanTrangThai($phim->trang_thai),
+        ]);
     }
 }

@@ -79,10 +79,38 @@ class ChungKetTest extends TestCase
         Carbon::setTestNow();
     }
 
+    public function test_chung_ket_only_lists_categories_with_official_nominees(): void
+    {
+        Carbon::setTestNow('2026-12-01 12:00:00');
+        [$account, $member] = $this->taoTaiKhoan();
+        $muaGiai = MuaGiai::create([
+            'ten_mua_giai' => 'Scaros', 'nam' => 2026, 'trang_thai' => 'dang_dien_ra',
+            'tg_bat_dau_chung_ket' => '2026-11-29 00:00:00', 'tg_ket_thuc_chung_ket' => '2026-12-05 23:59:59',
+        ]);
+        $khongDuDieuKien = HangMucGiai::create([
+            'ten_hang_muc' => 'Chưa có đề cử chính thức', 'ma_mua_giai' => $muaGiai->getKey(),
+            'loai_hang_muc' => 'phim', 'la_toan_the' => true,
+        ]);
+        $duDieuKien = HangMucGiai::create([
+            'ten_hang_muc' => 'Có đề cử chính thức', 'ma_mua_giai' => $muaGiai->getKey(),
+            'loai_hang_muc' => 'phim', 'la_toan_the' => true,
+        ]);
+        $this->taoDeCu($muaGiai, $khongDuDieuKien, $member, false);
+        $this->taoDeCu($muaGiai, $duDieuKien, $member, true);
+
+        $this->dangNhap($account);
+        $this->get(route('member.bo-phieu.chung-ket'))
+            ->assertOk()
+            ->assertSee('Có đề cử chính thức')
+            ->assertDontSee('Chưa có đề cử chính thức');
+
+        Carbon::setTestNow();
+    }
+
     private function taoTaiKhoan(): array
     {
         $chiHoi = ChiHoi::create(['ten_chi_hoi' => 'Chi hội '.Str::random(5)]);
-        $account = TaiKhoan::create([
+        $account = TaiKhoan::forceCreate([
             'email' => Str::random(8).'@example.test', 'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'member', 'nguon_tao' => 'seeder',
         ]);

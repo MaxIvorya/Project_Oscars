@@ -1,17 +1,27 @@
-<!doctype html>
-<html lang="vi">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Duyệt phim</title></head>
-<body>
-<main>
-    <h1>Danh sách phim chờ duyệt</h1>
-    @if (session('status')) <p>{{ session('status') }}</p> @endif
-    <ul>
+@extends('layouts.app')
+
+@section('tieu-de', $cap === 'chi-hoi' ? 'Duyệt phim cấp Chi hội' : 'Duyệt phim cấp Hội đồng')
+
+@section('noi-dung')
+<h1>{{ $cap === 'chi-hoi' ? 'Duyệt phim cấp Chi hội' : 'Duyệt phim cấp Hội đồng' }}</h1>
+<div class="bang-cuon">
+    <table>
+        <thead>
+            <tr><th>Tên phim</th><th>Người nộp</th><th>Chi hội</th><th>Năm</th><th></th></tr>
+        </thead>
+        <tbody>
         @forelse ($phims as $phim)
-            <li><a href="{{ route('admin.'.$cap.'.phim.show', $phim) }}">{{ $phim->ten_phim }}</a>
-                - {{ $phim->nguoiNop?->ho_ten }} - {{ $phim->nguoiNop?->chiHoi?->ten_chi_hoi }}
-                - {{ $phim->nam_phat_hanh }}</li>
-        @empty <li>Không có phim chờ duyệt.</li> @endforelse
-    </ul>
-</main>
-</body>
-</html>
+            <tr>
+                <td>{{ $phim->ten_phim }}</td>
+                <td>{{ $phim->nguoiNop?->ho_ten }}</td>
+                <td>{{ $phim->nguoiNop?->chiHoi?->ten_chi_hoi }}</td>
+                <td>{{ $phim->nam_phat_hanh }}</td>
+                <td><a href="{{ route('admin.'.$cap.'.phim.show', $phim) }}">Xem</a></td>
+            </tr>
+        @empty
+            <tr><td colspan="5">Không có phim chờ duyệt.</td></tr>
+        @endforelse
+        </tbody>
+    </table>
+</div>
+@endsection

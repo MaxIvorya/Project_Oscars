@@ -2,13 +2,22 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Models\Phim;
 use Illuminate\Foundation\Http\FormRequest;
 
 class TuChoiPhimRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $phim = $this->route('phim');
+        if (! $phim instanceof Phim) {
+            return false;
+        }
+
+        return $this->user()?->can(
+            $this->routeIs('admin.chi-hoi.*') ? 'duyetCapChiHoi' : 'duyetCapHoiDong',
+            $phim,
+        ) ?? false;
     }
 
     public function rules(): array

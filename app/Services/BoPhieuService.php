@@ -39,13 +39,13 @@ class BoPhieuService
                 ]);
             }
 
-            if (! $hangMuc->la_toan_the && $hangMuc->ma_chi_hoi !== $thanhVien->ma_chi_hoi) {
+            if (! $hangMuc->la_toan_the && (int) $hangMuc->ma_chi_hoi !== (int) $thanhVien->ma_chi_hoi) {
                 throw new AuthorizationException('Bạn không được bầu hạng mục của chi hội khác.');
             }
 
             if (
-                $deCu->ma_hang_muc !== $hangMuc->getKey()
-                || $deCu->ma_mua_giai !== $hangMuc->ma_mua_giai
+                (int) $deCu->ma_hang_muc !== (int) $hangMuc->getKey()
+                || (int) $deCu->ma_mua_giai !== (int) $hangMuc->ma_mua_giai
             ) {
                 throw ValidationException::withMessages([
                     'ma_de_cu' => 'Đề cử không thuộc hạng mục hoặc mùa giải này.',
@@ -86,20 +86,20 @@ class BoPhieuService
 
     public function hangMucSoLoai(ThanhVien $thanhVien)
     {
-        return HangMucGiai::with('muaGiai')
+        $hangMucs = HangMucGiai::with('muaGiai')
             ->whereHas('muaGiai', fn ($query) => $query->where('trang_thai', 'dang_dien_ra'))
             ->where(function ($query) use ($thanhVien): void {
                 $query->where('la_toan_the', true)->orWhere('ma_chi_hoi', $thanhVien->ma_chi_hoi);
             })
-            ->orderBy('ma_hang_muc')->get()
-            ->map(function (HangMucGiai $hangMuc) use ($thanhVien): HangMucGiai {
-                $hangMuc->da_bau = $thanhVien->phieuBauCus()
-                    ->where('ma_mua_giai', $hangMuc->ma_mua_giai)
-                    ->where('ma_hang_muc', $hangMuc->getKey())
-                    ->where('vong_bau', 'so_loai')->exists();
+            ->orderBy('ma_hang_muc')->get();
+        $daBau = $thanhVien->phieuBauCus()->where('vong_bau', 'so_loai')
+            ->whereIn('ma_hang_muc', $hangMucs->pluck('ma_hang_muc'))->pluck('ma_hang_muc')->all();
 
-                return $hangMuc;
-            });
+        return $hangMucs->map(function (HangMucGiai $hangMuc) use ($daBau): HangMucGiai {
+            $hangMuc->da_bau = in_array($hangMuc->getKey(), $daBau);
+
+            return $hangMuc;
+        });
     }
 
     public function boPhieuChungKet(ThanhVien $thanhVien, HangMucGiai $hangMuc, DeCu $deCu): PhieuBauCu
@@ -128,8 +128,8 @@ class BoPhieuService
             }
 
             if (
-                $deCu->ma_hang_muc !== $hangMuc->getKey()
-                || $deCu->ma_mua_giai !== $hangMuc->ma_mua_giai
+                (int) $deCu->ma_hang_muc !== (int) $hangMuc->getKey()
+                || (int) $deCu->ma_mua_giai !== (int) $hangMuc->ma_mua_giai
             ) {
                 throw ValidationException::withMessages([
                     'ma_de_cu' => 'Đề cử không thuộc hạng mục hoặc mùa giải này.',
@@ -176,17 +176,29 @@ class BoPhieuService
 
     public function hangMucChungKet(ThanhVien $thanhVien)
     {
-        return HangMucGiai::with('muaGiai')
+        $hangMucs = HangMucGiai::with('muaGiai')
             ->whereHas('muaGiai', fn ($query) => $query->where('trang_thai', 'dang_dien_ra'))
-            ->orderBy('ma_hang_muc')->get()
-            ->map(function (HangMucGiai $hangMuc) use ($thanhVien): HangMucGiai {
-                $hangMuc->da_bau = $thanhVien->phieuBauCus()
-                    ->where('ma_mua_giai', $hangMuc->ma_mua_giai)
-                    ->where('ma_hang_muc', $hangMuc->getKey())
-                    ->where('vong_bau', 'chung_ket')->exists();
+            ->whereHas('deCus', fn ($query) => $query->where('de_cu_chinh_thuc', true))
+            ->orderBy('ma_hang_muc')->get();
+        $daBau = $thanhVien->phieuBauCus()->where('vong_bau', 'chung_ket')
+            ->whereIn('ma_hang_muc', $hangMucs->pluck('ma_hang_muc'))->pluck('ma_hang_muc')->all();
 
-                return $hangMuc;
-            });
+        return $hangMucs->map(function (HangMucGiai $hangMuc) use ($daBau): HangMucGiai {
+            $hangMuc->da_bau = in_array($hangMuc->getKey(), $daBau);
+
+            return $hangMuc;
+        });
+    }
+
+    public function trangThaiVong(?Carbon $batDau, ?Carbon $ketThuc): string
+    {
+        $now = Carbon::now();
+
+        if ($batDau === null || $ketThuc === null || $now->lt($batDau)) {
+            return 'Chưa mở';
+        }
+
+        return $now->gt($ketThuc) ? 'Đã đóng' : 'Đang mở';
     }
 
     private function laLoiTrungPhieu(QueryException $exception): bool

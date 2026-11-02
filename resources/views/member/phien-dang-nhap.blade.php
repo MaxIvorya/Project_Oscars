@@ -1,9 +1,10 @@
-<!doctype html>
-<html lang="vi">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Phiên đăng nhập</title></head>
-<body>
-<main>
+@extends('layouts.app')
+
+@section('tieu-de', 'Phiên đăng nhập')
+
+@section('noi-dung')
     <h1>Phiên đăng nhập đang mở</h1>
+    <p>Tối đa 2 phiên cùng lúc.</p>
     <ul>
         @foreach ($phiens as $phien)
             <li>
@@ -14,6 +15,4 @@
         @endforeach
     </ul>
     <a href="{{ route('member.trang-chu') }}">Quay lại</a>
-</main>
-</body>
-</html>
+@endsection
