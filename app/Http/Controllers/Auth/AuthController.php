@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Exceptions\GioiHanPhienException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Exceptions\GioiHanPhienException;
+use App\Models\PhienDangNhap;
 use App\Models\TaiKhoan;
 use App\Services\GioiHanPhienService;
 use Illuminate\Http\RedirectResponse;
@@ -37,8 +38,10 @@ class AuthController extends Controller
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return redirect()->route('dang-nhap')->withInput($request->only('identifier'))
-                ->withErrors(['identifier' => 'Bạn đã thử quá nhiều lần. Vui lòng thử lại sau.'], 'login')
-                ->setStatusCode(429);
+                ->withErrors([
+                    'identifier' => 'Bạn đã thử quá nhiều lần. Vui lòng thử lại sau '
+                        .RateLimiter::availableIn($key).' giây.',
+                ], 'login');
         }
 
         $taiKhoan = str_contains($identifier, '@')
@@ -77,7 +80,7 @@ class AuthController extends Controller
     {
         $token = $request->session()->pull('phien_token');
         if ($token !== null) {
-            \App\Models\PhienDangNhap::where('session_token', $token)
+            PhienDangNhap::where('session_token', $token)
                 ->where('ma_tai_khoan', Auth::id())
                 ->update(['con_hieu_luc' => false]);
         }

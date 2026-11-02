@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class PasswordResetService
 {
@@ -38,9 +39,13 @@ class PasswordResetService
             'da_su_dung' => false,
         ]);
 
-        Mail::to($taiKhoan->email)->send(new PasswordResetMail(
-            route('dat-lai-mat-khau', ['token' => $tokenGoc]),
-        ));
+        try {
+            Mail::to($taiKhoan->email)->send(new PasswordResetMail(
+                route('dat-lai-mat-khau', ['token' => $tokenGoc]),
+            ));
+        } catch (TransportExceptionInterface $exception) {
+            report($exception);
+        }
     }
 
     public function datLaiMatKhau(string $tokenGoc, string $matKhau): bool

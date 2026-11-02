@@ -28,6 +28,22 @@ class MuaGiaiService
         });
     }
 
+    public function xoa(MuaGiai $muaGiai): void
+    {
+        DB::transaction(function () use ($muaGiai): void {
+            $muaGiai = MuaGiai::whereKey($muaGiai->getKey())->lockForUpdate()->firstOrFail();
+
+            if ($muaGiai->phims()->exists() || $muaGiai->deCus()->exists() || $muaGiai->phieuBauCus()->exists()) {
+                throw ValidationException::withMessages([
+                    'mua_giai' => 'Không thể xóa mùa giải đã có phim, đề cử hoặc phiếu bầu.',
+                ]);
+            }
+
+            $muaGiai->hangMucGiais()->delete();
+            $muaGiai->delete();
+        });
+    }
+
     private function kiemTraTrangThaiDuyNhat(string $trangThai, ?int $boQua = null): void
     {
         if ($trangThai === 'dang_dien_ra' && MuaGiai::where('trang_thai', 'dang_dien_ra')
