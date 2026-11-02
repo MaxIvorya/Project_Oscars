@@ -11,11 +11,15 @@ class VaiTro
     public function handle(Request $request, Closure $next, string ...$vaiTros): Response
     {
         $taiKhoan = $request->user();
-        $vaiTro = $taiKhoan?->vaiTroQuanTri();
+        if ($taiKhoan?->laMember()) {
+            if (in_array('member', $vaiTros, true)) {
+                return $next($request);
+            }
 
-        if ($taiKhoan?->laMember() && in_array('member', $vaiTros, true)) {
-            return $next($request);
+            abort(403);
         }
+
+        $vaiTro = $taiKhoan?->vaiTroQuanTri();
 
         if ($vaiTro !== null && in_array($vaiTro, $vaiTros, true)) {
             return $next($request);

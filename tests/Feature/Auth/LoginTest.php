@@ -9,6 +9,7 @@ use App\Models\ThanhVien;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Tests\TestCase;
 
 class LoginTest extends TestCase
@@ -67,7 +68,7 @@ class LoginTest extends TestCase
         $this->assertGuest();
     }
 
-    public function test_rate_limit_returns_429_after_five_failed_attempts(): void
+    public function test_rate_limit_blocks_after_five_failed_attempts(): void
     {
         $this->taoTaiKhoan('member-a@scaros.test', 'HV001', 'member');
 
@@ -81,7 +82,9 @@ class LoginTest extends TestCase
         $this->post(route('dang-nhap.xu-ly'), [
             'identifier' => 'member-a@scaros.test',
             'password' => 'wrong',
-        ])->assertStatus(429);
+        ])->assertRedirect(route('dang-nhap'))
+            ->assertSessionHasErrorsIn('login', ['identifier']);
+        $this->assertGuest();
     }
 
     public function test_logout_closes_only_the_current_session(): void
@@ -93,7 +96,7 @@ class LoginTest extends TestCase
             'password' => 'password',
         ]);
         $currentToken = session('phien_token');
-        $otherToken = \Illuminate\Support\Str::random(60);
+        $otherToken = Str::random(60);
         $account->phienDangNhaps()->create([
             'session_token' => $otherToken,
             'thiet_bi' => 'Thiết bị khác',

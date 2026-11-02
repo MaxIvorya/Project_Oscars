@@ -49,7 +49,7 @@ class PhimDuyetController extends Controller
         try {
             $service->duyetCapChiHoi($phim, Auth::user()->thanhVien, true);
         } catch (ValidationException $exception) {
-            return back()->withErrors($exception->errors())->setStatusCode(422);
+            return back()->withErrors($exception->errors());
         }
 
         return redirect()->route('admin.chi-hoi.phim.index')->with('status', 'Đã chuyển phim lên Hội đồng duyệt.');
@@ -73,7 +73,7 @@ class PhimDuyetController extends Controller
         try {
             $service->duyetCapHoiDong($phim, Auth::user()->thanhVien, true);
         } catch (ValidationException $exception) {
-            return back()->withErrors($exception->errors())->setStatusCode(422);
+            return back()->withErrors($exception->errors());
         }
 
         return redirect()->route('admin.hoi-dong.phim.index')->with('status', 'Đã duyệt phim.');

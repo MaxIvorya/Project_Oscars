@@ -9,7 +9,6 @@ use App\Models\Phim;
 use App\Models\TaiKhoan;
 use App\Models\ThanhVien;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
@@ -75,7 +74,9 @@ class DuyetPhimTest extends TestCase
         $film = $this->taoPhim(1, 'cho_duyet_hoi_dong');
         $this->dangNhap($admin);
 
-        $this->post(route('admin.chi-hoi.phim.duyet', $film))->assertStatus(422);
+        $this->post(route('admin.chi-hoi.phim.duyet', $film))
+            ->assertRedirect()->assertSessionHasErrors('phim');
+        $this->assertSame('cho_duyet_hoi_dong', $film->fresh()->trang_thai);
     }
 
     public function test_hoi_dong_admin_cannot_approve_a_first_level_film(): void
@@ -84,7 +85,9 @@ class DuyetPhimTest extends TestCase
         $film = $this->taoPhim(1);
         $this->dangNhap($admin);
 
-        $this->post(route('admin.hoi-dong.phim.duyet', $film))->assertStatus(422);
+        $this->post(route('admin.hoi-dong.phim.duyet', $film))
+            ->assertRedirect()->assertSessionHasErrors('phim');
+        $this->assertSame('cho_duyet_chi_hoi', $film->fresh()->trang_thai);
     }
 
     public function test_hoi_dong_can_approve_or_reject_second_level_films(): void

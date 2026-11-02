@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\DeCu;
 use App\Models\HangMucGiai;
+use App\Models\MuaGiai;
 use App\Models\NgheSi;
 use App\Models\Phim;
 use Illuminate\Support\Facades\DB;
@@ -11,6 +12,31 @@ use Illuminate\Validation\ValidationException;
 
 class DeCuService
 {
+    public function tongHopPhieu(MuaGiai $muaGiai)
+    {
+        return DB::table('decu as d')
+            ->join('hangmucgiai as h', 'h.ma_hang_muc', '=', 'd.ma_hang_muc')
+            ->leftJoin('phim as f', 'f.ma_phim', '=', 'd.ma_phim')
+            ->leftJoin('nghesi as n', 'n.ma_nghe_si', '=', 'd.ma_nghe_si')
+            ->leftJoin('phieubaucu as p', 'p.ma_de_cu', '=', 'd.ma_de_cu')
+            ->where('d.ma_mua_giai', $muaGiai->getKey())
+            ->groupBy(
+                'h.ma_hang_muc',
+                'h.ten_hang_muc',
+                'd.ma_de_cu',
+                'd.de_cu_chinh_thuc',
+                'd.nguoi_thang',
+                'f.ten_phim',
+                'n.ho_ten',
+            )
+            ->orderBy('h.ma_hang_muc')->orderBy('d.ma_de_cu')
+            ->selectRaw("h.ma_hang_muc, h.ten_hang_muc, d.ma_de_cu, d.de_cu_chinh_thuc, d.nguoi_thang,
+                COALESCE(f.ten_phim, n.ho_ten) as ung_vien,
+                COALESCE(SUM(CASE WHEN p.vong_bau = 'so_loai' THEN 1 ELSE 0 END), 0) as phieu_so_loai,
+                COALESCE(SUM(CASE WHEN p.vong_bau = 'chung_ket' THEN 1 ELSE 0 END), 0) as phieu_chung_ket")
+            ->get();
+    }
+
     public function ungVienPhim(HangMucGiai $hangMuc)
     {
         return Phim::where('ma_mua_giai', $hangMuc->ma_mua_giai)

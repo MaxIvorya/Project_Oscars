@@ -1,4 +1,5 @@
 <h1>{{ $hangMuc->ten_hang_muc }}</h1>
+@include('partials.thong-bao')
 @if ($phieu)
     <p>Bạn đã bầu: {{ $phieu->deCu->phim?->ten_phim ?? $phieu->deCu->ngheSi?->ho_ten }}</p>
 @else

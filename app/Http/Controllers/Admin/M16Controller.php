@@ -14,7 +14,6 @@ use App\Services\HangMucGiaiService;
 use App\Services\MuaGiaiService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class M16Controller extends Controller
 {
@@ -39,13 +38,10 @@ class M16Controller extends Controller
         return back()->with('thongBao', 'Đã cập nhật mùa giải.');
     }
 
-    public function muaGiaiDelete(MuaGiai $muaGiai): RedirectResponse
+    public function muaGiaiDelete(MuaGiai $muaGiai, MuaGiaiService $service): RedirectResponse
     {
         $this->authorize('delete', $muaGiai);
-        if ($muaGiai->hangMucGiais()->exists() || $muaGiai->deCus()->exists()) {
-            return back()->withErrors(['mua_giai' => 'Không thể xóa mùa giải đã có dữ liệu.']);
-        }
-        $muaGiai->delete();
+        $service->xoa($muaGiai);
 
         return back()->with('thongBao', 'Đã xóa mùa giải.');
     }
@@ -117,15 +113,13 @@ class M16Controller extends Controller
         return back()->with('thongBao', 'Đã xóa đề cử.');
     }
 
-    public function tongHop(MuaGiai $muaGiai)
+    public function tongHop(MuaGiai $muaGiai, DeCuService $service)
     {
         $this->authorize('view', $muaGiai);
-        $phieu = DB::table('phieubaucu')
-            ->join('hangmucgiai', 'hangmucgiai.ma_hang_muc', '=', 'phieubaucu.ma_hang_muc')
-            ->where('hangmucgiai.ma_mua_giai', $muaGiai->getKey())
-            ->select('hangmucgiai.ten_hang_muc', 'phieubaucu.ma_de_cu', DB::raw('count(*) as so_phieu'))
-            ->groupBy('hangmucgiai.ten_hang_muc', 'phieubaucu.ma_de_cu')->get();
 
-        return view('admin.m16.tong-hop', compact('muaGiai', 'phieu'));
+        return view('admin.m16.tong-hop', [
+            'muaGiai' => $muaGiai,
+            'dong' => $service->tongHopPhieu($muaGiai),
+        ]);
     }
 }
