@@ -1,20 +1,40 @@
-<!doctype html>
-<html lang="vi">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{ $phim->ten_phim }}</title></head>
-<body>
-<main>
-    <h1>{{ $phim->ten_phim }}</h1>
-    @include('partials.thong-bao')
-    <p>Người nộp: {{ $phim->nguoiNop?->ho_ten }}</p>
-    <p>Ê-kíp: {{ $phim->e_kip }}</p>
-    @if ($phim->duong_dan_video) <p><a href="{{ $phim->duong_dan_video }}">Xem video mẫu</a></p> @endif
-    <form method="post" action="{{ route('admin.'.$cap.'.phim.duyet', $phim) }}">@csrf<button>Duyệt</button></form>
-    <form method="post" action="{{ route('admin.'.$cap.'.phim.tu-choi', $phim) }}">
-        @csrf
-        <label for="ly_do">Lý do từ chối</label>
-        <textarea id="ly_do" name="ly_do" required></textarea>
-        <button>Từ chối</button>
-    </form>
-</main>
-</body>
-</html>
+@extends('layouts.app')
+
+@section('tieu-de', $phim->ten_phim)
+
+@section('noi-dung')
+<h1>{{ $phim->ten_phim }}</h1>
+<dl>
+    <dt>Mùa giải</dt><dd>{{ $phim->muaGiai?->ten_mua_giai }}</dd>
+    <dt>Người nộp</dt><dd>{{ $phim->nguoiNop?->ho_ten }}</dd>
+    <dt>Chi hội</dt><dd>{{ $phim->nguoiNop?->chiHoi?->ten_chi_hoi }}</dd>
+    <dt>Năm phát hành</dt><dd>{{ $phim->nam_phat_hanh }}</dd>
+    <dt>Ê-kíp</dt><dd>{{ $phim->e_kip }}</dd>
+    <dt>Trạng thái</dt><dd>{{ $nhanTrangThai }}</dd>
+    @if ($phim->duong_dan_video)
+        <dt>Video</dt><dd><a href="{{ $phim->duong_dan_video }}" target="_blank" rel="noopener">Mở video mẫu</a></dd>
+    @endif
+</dl>
+<h2>Lịch sử xử lý</h2>
+<ul>
+    <li>Chi hội: {{ $phim->nguoiDuyetChiHoi?->ho_ten ?? 'Chưa xử lý' }}
+        @if ($phim->thoi_diem_duyet_chi_hoi) - {{ $phim->thoi_diem_duyet_chi_hoi->format('d/m/Y H:i') }} @endif
+        @if ($phim->ly_do_tu_choi_chi_hoi) - {{ $phim->ly_do_tu_choi_chi_hoi }} @endif
+    </li>
+    <li>Hội đồng: {{ $phim->nguoiDuyetHoiDong?->ho_ten ?? 'Chưa xử lý' }}
+        @if ($phim->thoi_diem_duyet_hoi_dong) - {{ $phim->thoi_diem_duyet_hoi_dong->format('d/m/Y H:i') }} @endif
+        @if ($phim->ly_do_tu_choi_hoi_dong) - {{ $phim->ly_do_tu_choi_hoi_dong }} @endif
+    </li>
+</ul>
+<form method="post" action="{{ route('admin.'.$cap.'.phim.duyet', $phim) }}" onsubmit="return confirm('Xác nhận duyệt phim này?')">
+    @csrf
+    <button type="submit">Duyệt</button>
+</form>
+<form method="post" action="{{ route('admin.'.$cap.'.phim.tu-choi', $phim) }}">
+    @csrf
+    <label for="ly_do">Lý do từ chối</label>
+    <textarea id="ly_do" name="ly_do" required>{{ old('ly_do') }}</textarea>
+    @error('ly_do') <p>{{ $message }}</p> @enderror
+    <button type="submit">Từ chối</button>
+</form>
+@endsection

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TuChoiPhimRequest;
 use App\Models\Phim;
 use App\Services\DuyetPhimService;
+use App\Services\PhimService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
@@ -35,12 +36,17 @@ class PhimDuyetController extends Controller
         return view('admin.phim.index', ['phims' => $phims, 'cap' => 'hoi-dong']);
     }
 
-    public function show(Phim $phim): View
+    public function show(Phim $phim, PhimService $service): View
     {
         $cap = request()->routeIs('admin.chi-hoi.*') ? 'chi-hoi' : 'hoi-dong';
         Gate::authorize($cap === 'chi-hoi' ? 'duyetCapChiHoi' : 'duyetCapHoiDong', $phim);
+        $phim->load(['muaGiai', 'nguoiNop.chiHoi', 'nguoiDuyetChiHoi', 'nguoiDuyetHoiDong']);
 
-        return view('admin.phim.show', compact('phim', 'cap'));
+        return view('admin.phim.show', [
+            'phim' => $phim,
+            'cap' => $cap,
+            'nhanTrangThai' => $service->nhanTrangThai($phim->trang_thai),
+        ]);
     }
 
     public function duyetChiHoi(Phim $phim, DuyetPhimService $service): RedirectResponse

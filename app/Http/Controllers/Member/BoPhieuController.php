@@ -18,9 +18,16 @@ class BoPhieuController extends Controller
     {
         $thanhVien = Auth::user()->thanhVien;
         abort_unless($thanhVien?->trang_thai === 'hoat_dong', 403);
+        $hangMucs = $service->hangMucSoLoai($thanhVien);
+        $muaGiai = $hangMucs->first()?->muaGiai;
 
         return view('member.bo-phieu.so-loai.index', [
-            'hangMucs' => $service->hangMucSoLoai($thanhVien),
+            'hangMucs' => $hangMucs,
+            'muaGiai' => $muaGiai,
+            'trangThaiVong' => $service->trangThaiVong(
+                $muaGiai?->tg_bat_dau_so_loai,
+                $muaGiai?->tg_ket_thuc_so_loai,
+            ),
         ]);
     }
 
@@ -29,11 +36,12 @@ class BoPhieuController extends Controller
         $thanhVien = Auth::user()->thanhVien;
         abort_unless($thanhVien?->trang_thai === 'hoat_dong', 403);
         abort_unless(
-            $hangMuc->la_toan_the || $hangMuc->ma_chi_hoi === $thanhVien?->ma_chi_hoi,
+            $hangMuc->la_toan_the || (int) $hangMuc->ma_chi_hoi === (int) $thanhVien?->ma_chi_hoi,
             403
         );
 
         $hangMuc->load('muaGiai');
+        abort_unless($hangMuc->muaGiai?->trang_thai === 'dang_dien_ra', 404);
         $phieu = $thanhVien->phieuBauCus()
             ->where('ma_mua_giai', $hangMuc->ma_mua_giai)
             ->where('ma_hang_muc', $hangMuc->getKey())
@@ -59,9 +67,16 @@ class BoPhieuController extends Controller
     public function chungKet(BoPhieuService $service): View
     {
         abort_unless(Auth::user()->thanhVien?->trang_thai === 'hoat_dong', 403);
+        $hangMucs = $service->hangMucChungKet(Auth::user()->thanhVien);
+        $muaGiai = $hangMucs->first()?->muaGiai;
 
         return view('member.bo-phieu.chung-ket.index', [
-            'hangMucs' => $service->hangMucChungKet(Auth::user()->thanhVien),
+            'hangMucs' => $hangMucs,
+            'muaGiai' => $muaGiai,
+            'trangThaiVong' => $service->trangThaiVong(
+                $muaGiai?->tg_bat_dau_chung_ket,
+                $muaGiai?->tg_ket_thuc_chung_ket,
+            ),
         ]);
     }
 
@@ -69,6 +84,9 @@ class BoPhieuController extends Controller
     {
         $thanhVien = Auth::user()->thanhVien;
         abort_unless($thanhVien?->trang_thai === 'hoat_dong', 403);
+        $hangMuc->load('muaGiai');
+        abort_unless($hangMuc->muaGiai?->trang_thai === 'dang_dien_ra', 404);
+        abort_unless($hangMuc->deCus()->where('de_cu_chinh_thuc', true)->exists(), 404);
         $phieu = $thanhVien->phieuBauCus()
             ->where('ma_mua_giai', $hangMuc->ma_mua_giai)
             ->where('ma_hang_muc', $hangMuc->getKey())

@@ -20,13 +20,12 @@ class PhimPolicy
             ->where('vai_tro', 'ban_dieu_hanh_chi_hoi')->first();
 
         return $quyen !== null
-            && $phim->nguoiNop?->ma_chi_hoi === $quyen->ma_chi_hoi;
+            && (int) $phim->nguoiNop?->ma_chi_hoi === (int) $quyen->ma_chi_hoi;
     }
 
     public function duyetCapHoiDong(TaiKhoan $taiKhoan, Phim $phim): bool
     {
         return $taiKhoan->thanhVien?->phanQuyens()
-            ->where('vai_tro', 'hoi_dong_quan_tri')->exists() === true
-            ;
+            ->where('vai_tro', 'hoi_dong_quan_tri')->exists() === true;
     }
 }

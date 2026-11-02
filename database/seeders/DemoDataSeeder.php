@@ -4,8 +4,8 @@ namespace Database\Seeders;
 
 use App\Models\BaiViet;
 use App\Models\ChiHoi;
-use App\Models\DeCu;
 use App\Models\DangKySuKien;
+use App\Models\DeCu;
 use App\Models\HangMucGiai;
 use App\Models\HangMucMau;
 use App\Models\LoaiSuKien;
@@ -32,7 +32,7 @@ class DemoDataSeeder extends Seeder
             ['admin-chi-hoi@scaros.test', 'admin'],
             ['admin-hoi-dong@scaros.test', 'admin'],
             ['super-admin@scaros.test', 'admin'],
-        ])->map(fn (array $account) => TaiKhoan::create([
+        ])->map(fn (array $account) => TaiKhoan::forceCreate([
             'email' => $account[0],
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => $account[1],

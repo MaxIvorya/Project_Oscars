@@ -79,7 +79,7 @@ class SoLoaiTest extends TestCase
     private function taoTaiKhoan(string $trangThai = 'hoat_dong'): array
     {
         $chiHoi = ChiHoi::create(['ten_chi_hoi' => 'Chi hội '.Str::random(5)]);
-        $account = TaiKhoan::create([
+        $account = TaiKhoan::forceCreate([
             'email' => Str::random(8).'@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'member',

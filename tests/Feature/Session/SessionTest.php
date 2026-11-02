@@ -98,7 +98,7 @@ class SessionTest extends TestCase
 
     public function test_admin_without_permission_cannot_login(): void
     {
-        $account = TaiKhoan::create([
+        $account = TaiKhoan::forceCreate([
             'email' => 'admin@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'admin',
@@ -120,7 +120,7 @@ class SessionTest extends TestCase
     private function taoTaiKhoan(): TaiKhoan
     {
         $chiHoi = ChiHoi::create(['ten_chi_hoi' => 'Chi hội '.Str::random(5)]);
-        $account = TaiKhoan::create([
+        $account = TaiKhoan::forceCreate([
             'email' => Str::random(8).'@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'member',

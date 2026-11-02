@@ -126,6 +126,21 @@ class DuyetPhimTest extends TestCase
         $this->post(route('admin.chi-hoi.phim.duyet', $film))->assertForbidden();
     }
 
+    public function test_admin_chapter_can_review_m16_without_write_controls(): void
+    {
+        $season = MuaGiai::create([
+            'ten_mua_giai' => 'Mùa xem thử', 'nam' => 2026, 'trang_thai' => 'dang_dien_ra',
+        ]);
+        [$admin] = $this->taoTaiKhoan('ban_dieu_hanh_chi_hoi', 1);
+        $this->dangNhap($admin);
+
+        $this->get(route('admin.m16.mua-giai.index'))
+            ->assertOk()
+            ->assertSee($season->ten_mua_giai)
+            ->assertSee('Xem hạng mục')
+            ->assertDontSee('Tạo');
+    }
+
     private function dangNhap(TaiKhoan $account): void
     {
         RateLimiter::clear($account->email.'|127.0.0.1');
@@ -138,7 +153,7 @@ class DuyetPhimTest extends TestCase
     private function taoTaiKhoan(string $vaiTro, int $chiHoiId): array
     {
         $chiHoi = ChiHoi::find($chiHoiId) ?? ChiHoi::create(['ten_chi_hoi' => 'Chi hội '.$chiHoiId]);
-        $account = TaiKhoan::create([
+        $account = TaiKhoan::forceCreate([
             'email' => strtolower(Str::random(8)).'@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => $vaiTro === 'member' ? 'member' : 'admin',

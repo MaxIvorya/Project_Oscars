@@ -131,7 +131,7 @@ class LoginTest extends TestCase
     private function taoTaiKhoan(string $email, string $maHoiVien, string $vaiTro): TaiKhoan
     {
         $chiHoi = ChiHoi::firstOrCreate(['ten_chi_hoi' => 'Chi hội A']);
-        $account = TaiKhoan::create([
+        $account = TaiKhoan::forceCreate([
             'email' => $email,
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => $vaiTro,
