@@ -7,8 +7,8 @@ use Illuminate\Console\Scheduling\Schedule;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
-        commands: __DIR__.'/../routes/console.php',
+        web: __DIR__ . '/../routes/web.php',
+        commands: __DIR__ . '/../routes/console.php',
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
@@ -16,7 +16,8 @@ return Application::configure(basePath: dirname(__DIR__))
             'vai.tro' => \App\Http\Middleware\VaiTro::class,
             'phien.hop.le' => \App\Http\Middleware\KiemTraPhienHopLe::class,
         ]);
-        $middleware->redirectGuestsTo(fn () => route('dang-nhap'));
+        $middleware->web(append: [\App\Http\Middleware\KhongLuuCache::class]);
+        $middleware->redirectGuestsTo(fn() => route('dang-nhap'));
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('phien:don-dep')->everyFiveMinutes();

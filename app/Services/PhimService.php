@@ -3,7 +3,9 @@
 namespace App\Services;
 
 use App\Models\MuaGiai;
+use App\Models\NgheSi;
 use App\Models\Phim;
+use App\Models\PhimNgheSi;
 use App\Models\ThanhVien;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -35,15 +37,53 @@ class PhimService
             ]);
         }
 
-        return DB::transaction(fn (): Phim => Phim::create([
-            'ma_mua_giai' => $muaGiai->getKey(),
-            'ten_phim' => $duLieu['ten_phim'],
-            'nam_phat_hanh' => $duLieu['nam_phat_hanh'],
-            'e_kip' => $duLieu['e_kip'] ?? null,
-            'duong_dan_video' => $duLieu['duong_dan_video'] ?? null,
-            'ma_nguoi_nop' => $thanhVien->getKey(),
-            'trang_thai' => 'cho_duyet_chi_hoi',
-        ]));
+        return DB::transaction(function () use ($duLieu, $muaGiai, $thanhVien): Phim {
+            $phim = Phim::create([
+                'ma_mua_giai' => $muaGiai->getKey(),
+                'ten_phim' => $duLieu['ten_phim'],
+                'nam_phat_hanh' => $duLieu['nam_phat_hanh'],
+                'e_kip' => filled($duLieu['the_loai'] ?? null)
+                    ? 'Thể loại: '.$duLieu['the_loai']
+                    : null,
+                'duong_dan_video' => $duLieu['duong_dan_video'] ?? null,
+                'ma_nguoi_nop' => $thanhVien->getKey(),
+                'trang_thai' => 'cho_duyet_chi_hoi',
+            ]);
+
+            foreach ([
+                'dao_dien' => 'dao_dien',
+                'nam_chinh' => 'nam_chinh',
+                'nu_chinh' => 'nu_chinh',
+                'nam_phu' => 'nam_phu',
+                'nu_phu' => 'nu_phu',
+            ] as $truong => $vaiTro) {
+                foreach ($this->tachDanhSach($duLieu[$truong] ?? null) as $hoTen) {
+                    $ngheSi = NgheSi::firstOrCreate(['ho_ten' => $hoTen]);
+                    PhimNgheSi::create([
+                        'ma_phim' => $phim->getKey(),
+                        'ma_nghe_si' => $ngheSi->getKey(),
+                        'vai_tro' => $vaiTro,
+                    ]);
+                }
+            }
+
+            return $phim;
+        });
+    }
+
+    /**
+     * Cho phép nhập nhiều người bằng dấu phẩy hoặc xuống dòng.
+     *
+     * @return list<string>
+     */
+    private function tachDanhSach(?string $giaTri): array
+    {
+        return collect(preg_split('/[,;\r\n]+/', (string) $giaTri))
+            ->map(fn (string $ten) => trim($ten))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
     }
 
     public function nhanTrangThai(string $trangThai): string

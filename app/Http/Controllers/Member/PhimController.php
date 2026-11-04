@@ -59,11 +59,18 @@ class PhimController extends Controller
     public function show(Phim $phim): View
     {
         Gate::authorize('view', $phim);
-        $phim->load(['muaGiai', 'nguoiDuyetChiHoi', 'nguoiDuyetHoiDong']);
+        $phim->load(['muaGiai', 'nguoiDuyetChiHoi', 'nguoiDuyetHoiDong', 'phimNgheSis.ngheSi']);
 
         return view('member.phim.show', [
             'phim' => $phim,
             'nhanTrangThai' => app(PhimService::class)->nhanTrangThai($phim->trang_thai),
+            'nhanVaiTroNgheSi' => [
+                'dao_dien' => 'Đạo diễn',
+                'nam_chinh' => 'Nam chính',
+                'nu_chinh' => 'Nữ chính',
+                'nam_phu' => 'Nam phụ',
+                'nu_phu' => 'Nữ phụ',
+            ],
         ]);
     }
 }
