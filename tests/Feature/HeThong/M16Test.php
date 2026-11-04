@@ -81,7 +81,7 @@ class M16Test extends TestCase
             'email' => 'member@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => 'member',
-            'nguon_tao' => 'test',
+            'nguon_tao' => 'seeder',
         ]);
         $thanhVien = ThanhVien::create([
             'ma_tai_khoan' => $taiKhoan->getKey(),

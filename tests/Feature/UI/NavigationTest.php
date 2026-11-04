@@ -129,7 +129,7 @@ class NavigationTest extends TestCase
             'email' => Str::random(8).'@example.test',
             'mat_khau_hash' => Hash::make('password'),
             'vai_tro' => $vaiTro === 'member' ? 'member' : 'admin',
-            'nguon_tao' => 'test',
+            'nguon_tao' => 'seeder',
         ]);
         $member = ThanhVien::create([
             'ma_tai_khoan' => $account->getKey(),
