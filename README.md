@@ -49,7 +49,7 @@ Truy cập: http://127.0.0.1:8000
 ## Thành viên thực hiện
 
 | STT| MSSV | Họ và tên | Vai trò | Nội dung |
-|---|---|---|---|
+|---|---|---|---|---|
 | 1 | 65132683 | Trần Bảo Phi | Nhóm trưởng | M1 Đăng nhập/Đăng xuất, M2 Quản lý phiên đồng thời, M3 Khôi phục mật khẩu, M5 Nộp phim dự thi, M6 Duyệt phim (2 cấp), M7 Bỏ phiếu sơ loại, M8 Bỏ phiếu chung kết, M16 Quản lý mùa giải & hạng mục |
 | 2 | 65131264 | Chu Minh Huy | Thành viên | M4 Phòng chiếu phim thành viên M9 Danh bạ thành viên M10 Hồ sơ cá nhân thành viên M11 Quản lý sự kiện (Admin)
 M12 Đăng ký/Huỷ tham dự sự kiện M13 Lập hồ sơ bảo lãnh
