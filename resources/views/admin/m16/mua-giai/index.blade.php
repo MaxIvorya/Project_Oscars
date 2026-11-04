@@ -17,11 +17,12 @@
         @forelse ($muaGiais as $muaGiai)
             <tr>
                 <td>{{ $muaGiai->ten_mua_giai }}</td><td>{{ $muaGiai->nam }}</td>
-                <td>{{ $muaGiai->trang_thai }}</td><td>{{ $muaGiai->hang_muc_giais_count }}</td>
-                <td><a href="{{ route('admin.m16.mua-giai.show', $muaGiai) }}">Xem chi tiết</a>
-                    <a href="{{ route('admin.m16.hang-muc.index', $muaGiai) }}">Xem hạng mục</a>
-                    @if ($coQuyenGhi)<a href="{{ route('admin.m16.tong-hop', $muaGiai) }}">Tổng hợp phiếu</a>@endif
-                </td>
+                <td><span class="huy-hieu-trang-thai {{ ['sap_dien_ra' => 'trang-thai-sap', 'dang_dien_ra' => 'trang-thai-dang', 'da_ket_thuc' => 'trang-thai-xong'][$muaGiai->trang_thai] ?? '' }}">{{ ['sap_dien_ra' => 'Sắp diễn ra', 'dang_dien_ra' => 'Đang diễn ra', 'da_ket_thuc' => 'Đã kết thúc'][$muaGiai->trang_thai] ?? $muaGiai->trang_thai }}</span></td><td>{{ $muaGiai->hang_muc_giais_count }}</td>
+                <td><div class="hanh-dong">
+                    <a class="nut nut-nho" href="{{ route('admin.m16.mua-giai.show', $muaGiai) }}">Xem chi tiết</a>
+                    <a class="nut nut-nho nut-phu" href="{{ route('admin.m16.hang-muc.index', $muaGiai) }}">Xem hạng mục</a>
+                    @if ($coQuyenGhi)<a class="nut nut-nho nut-phu" href="{{ route('admin.m16.tong-hop', $muaGiai) }}">Tổng hợp phiếu</a>@endif
+                </div></td>
             </tr>
         @empty
             <tr><td colspan="5">Chưa có mùa giải.</td></tr>

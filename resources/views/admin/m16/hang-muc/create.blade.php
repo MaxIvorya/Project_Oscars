@@ -3,7 +3,7 @@
 @section('tieu-de', 'Thêm hạng mục')
 
 @section('noi-dung')
-<p><a href="{{ route('admin.m16.mua-giai.show', $muaGiai) }}">← Chi tiết mùa giải</a></p>
+<p><a class="quay-lai" href="{{ route('admin.m16.mua-giai.show', $muaGiai) }}">← Chi tiết mùa giải</a></p>
 <h1>Thêm hạng mục riêng</h1>
 <p>Mùa giải: <strong>{{ $muaGiai->ten_mua_giai }}</strong></p>
 @include('partials.thong-bao')

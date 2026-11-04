@@ -3,7 +3,7 @@
 @section('tieu-de', 'Tổng hợp phiếu')
 
 @section('noi-dung')
-<p><a href="{{ route('admin.m16.mua-giai.show', $muaGiai) }}">← Chi tiết mùa giải</a></p>
+<p><a class="quay-lai" href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
 <h1>Tổng hợp phiếu {{ $muaGiai->ten_mua_giai }}</h1>
 @include('partials.thong-bao')
 <p class="chu-phu">Chỉ Super Admin được đánh dấu chính thức/người thắng. Ứng viên xếp theo số phiếu chung kết, rồi đến sơ loại.</p>

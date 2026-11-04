@@ -3,7 +3,7 @@
 @section('tieu-de', 'Thêm mùa giải')
 
 @section('noi-dung')
-<p><a href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
+<p><a class="quay-lai" href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
 <h1>Thêm mùa giải</h1>
 <p>Tạo mùa giải sẽ tự sinh hạng mục từ các hạng mục mẫu đang sử dụng.</p>
 @include('partials.thong-bao')

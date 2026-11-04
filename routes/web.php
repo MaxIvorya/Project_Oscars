@@ -18,7 +18,7 @@ Route::get('/', function () {
     return match (auth()->user()->vaiTroQuanTri()) {
         'ban_dieu_hanh_chi_hoi' => redirect()->route('admin.chi-hoi.trang-chu'),
         'hoi_dong_quan_tri' => redirect()->route('admin.hoi-dong.trang-chu'),
-        'quan_tri_he_thong' => redirect()->route('admin.he-thong.trang-chu'),
+        'quan_tri_he_thong' => redirect()->route('admin.m16.mua-giai.index'),
         default => redirect()->route('member.trang-chu'),
     };
 });
