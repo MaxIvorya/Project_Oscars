@@ -6,6 +6,12 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <title>@yield('tieu-de', config('app.name'))</title>
 </head>
+<script>
+    // Trang được khôi phục từ bộ nhớ đệm khi bấm Back: tải lại để server kiểm tra phiên.
+    window.addEventListener('pageshow', function (e) {
+        if (e.persisted) { window.location.reload(); }
+    });
+</script>
 <body>
     <header class="thanh-tren">
         <a class="ten-he-thong" href="{{ route($menu[0]['route'] ?? 'dang-nhap') }}">{{ config('app.name') }}</a>

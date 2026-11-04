@@ -3,13 +3,13 @@
 @section('tieu-de', 'Chi tiết '.$muaGiai->ten_mua_giai)
 
 @section('noi-dung')
-<p><a href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
+<p><a class="quay-lai" href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
 <h1>Chi tiết mùa giải: {{ $muaGiai->ten_mua_giai }}</h1>
 @include('partials.thong-bao')
 <nav aria-label="Các mục chi tiết mùa giải">
-    <a class="nut" href="#thong-tin-mua-giai">1. Mùa giải</a>
-    <a class="nut" href="#danh-sach-hang-muc">2. Hạng mục</a>
-    <a class="nut" href="#danh-sach-de-cu">3. Đề cử</a>
+    <a class="nut nut-phu" href="#thong-tin-mua-giai">1. Mùa giải</a>
+    <a class="nut nut-phu" href="#danh-sach-hang-muc">2. Hạng mục</a>
+    <a class="nut nut-phu" href="#danh-sach-de-cu">3. Đề cử</a>
 </nav>
 
 <section id="thong-tin-mua-giai">
@@ -38,7 +38,7 @@
                 <button type="submit">Lưu thay đổi</button>
             </form>
             <form method="post" action="{{ route('admin.m16.mua-giai.delete', $muaGiai) }}" onsubmit="return confirm('Xóa mùa giải này?')">
-                @csrf @method('DELETE')<button type="submit">Xóa mùa giải</button>
+                @csrf @method('DELETE')<button type="submit" class="nut-nguy-hiem">Xóa mùa giải</button>
             </form>
         </details>
     @endif
@@ -63,7 +63,7 @@
                         <a href="{{ route('admin.m16.tong-hop', $muaGiai) }}#hang-muc-{{ $hangMuc->ma_hang_muc }}">{{ $hangMuc->phieu_so_loai + $hangMuc->phieu_chung_ket }}</a>
                         <small class="chu-phu">Sơ loại {{ $hangMuc->phieu_so_loai }} · Chung kết {{ $hangMuc->phieu_chung_ket }}</small>
                     </td>
-                    <td><a href="{{ route('admin.m16.de-cu.index', $hangMuc) }}">Xem đề cử</a></td>
+                    <td><a class="nut nut-nho nut-phu" href="{{ route('admin.m16.de-cu.index', $hangMuc) }}">Xem đề cử</a></td>
                 </tr>
             @empty
                 <tr><td colspan="6">Chưa có hạng mục.</td></tr>

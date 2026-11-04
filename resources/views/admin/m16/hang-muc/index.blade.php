@@ -3,9 +3,8 @@
 @section('tieu-de', $muaGiai->ten_mua_giai.' — Hạng mục')
 
 @section('noi-dung')
-<p><a href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
+<p><a class="quay-lai" href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
 <h1>{{ $muaGiai->ten_mua_giai }} — Hạng mục</h1>
-
 @include('partials.thong-bao')
 @if ($muaGiai->trang_thai === 'da_ket_thuc')
     <p>Mùa giải đã kết thúc — chỉ xem.</p>
@@ -28,7 +27,7 @@
                 <td>{{ $hangMuc->la_toan_the ? 'Toàn thể' : $hangMuc->chiHoi?->ten_chi_hoi }}</td>
                 <td>{{ $hangMuc->de_cus_count }}</td>
                 <td>
-                    <a href="{{ route('admin.m16.de-cu.index', $hangMuc) }}">Đề cử</a>
+                    <a class="nut nut-nho nut-phu" href="{{ route('admin.m16.de-cu.index', $hangMuc) }}">Đề cử</a>
                     @if ($coQuyenGhi && $muaGiai->trang_thai !== 'da_ket_thuc')
                         <details><summary>Sửa</summary>
                             <form method="post" action="{{ route('admin.m16.hang-muc.update', $hangMuc) }}">
@@ -44,7 +43,7 @@
                             </form>
                         </details>
                         <form method="post" action="{{ route('admin.m16.hang-muc.delete', $hangMuc) }}" onsubmit="return confirm('Xóa hạng mục này?')">
-                            @csrf @method('DELETE')<button type="submit">Xóa</button>
+                            @csrf @method('DELETE')<button type="submit" class="nut-nguy-hiem">Xóa</button>
                         </form>
                     @endif
                 </td>
