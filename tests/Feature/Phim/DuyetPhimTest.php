@@ -152,7 +152,7 @@ class DuyetPhimTest extends TestCase
 
     private function taoTaiKhoan(string $vaiTro, int $chiHoiId): array
     {
-        $chiHoi = ChiHoi::find($chiHoiId) ?? ChiHoi::create(['ten_chi_hoi' => 'Chi hội '.$chiHoiId]);
+        $chiHoi = ChiHoi::firstOrCreate(['ten_chi_hoi' => 'Chi hội '.$chiHoiId]);
         $account = TaiKhoan::forceCreate([
             'email' => strtolower(Str::random(8)).'@example.test',
             'mat_khau_hash' => Hash::make('password'),
@@ -178,9 +178,6 @@ class DuyetPhimTest extends TestCase
 
     private function taoPhim(int $chiHoiId, string $trangThai = 'cho_duyet_chi_hoi'): Phim
     {
-        if (! ChiHoi::find($chiHoiId)) {
-            ChiHoi::create(['ten_chi_hoi' => 'Chi hội '.$chiHoiId]);
-        }
         $member = $this->taoTaiKhoan('member', $chiHoiId)[1];
         $season = MuaGiai::create([
             'ten_mua_giai' => 'Mùa '.Str::random(5),

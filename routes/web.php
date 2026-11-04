@@ -2,11 +2,18 @@
 
 use App\Http\Controllers\Admin\M16Controller;
 use App\Http\Controllers\Admin\PhimDuyetController;
+use App\Http\Controllers\Admin\SuKienController as AdminSuKienController;
+use App\Http\Controllers\Admin\BaoLanhDuyetController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Member\BoPhieuController;
+use App\Http\Controllers\Member\DanhBaController;
 use App\Http\Controllers\Member\PhienDangNhapController;
 use App\Http\Controllers\Member\PhimController;
+use App\Http\Controllers\Member\PhongChieuController;
+use App\Http\Controllers\Member\HoSoController;
+use App\Http\Controllers\Member\SuKienController as MemberSuKienController;
+use App\Http\Controllers\Member\BaoLanhController;
 use App\Http\Controllers\TrangChuController;
 use Illuminate\Support\Facades\Route;
 
@@ -40,6 +47,20 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:member'])->group(function ()
     Route::get('/member', [TrangChuController::class, 'member'])->name('member.trang-chu');
     Route::get('/member/phien-dang-nhap', [PhienDangNhapController::class, 'index'])
         ->name('member.phien-dang-nhap');
+    Route::get('/member/ho-so', [HoSoController::class, 'edit'])->name('member.ho-so.edit');
+    Route::put('/member/ho-so', [HoSoController::class, 'update'])->name('member.ho-so.update');
+    Route::get('/member/danh-ba', [DanhBaController::class, 'index'])->name('member.danh-ba.index');
+    Route::get('/member/danh-ba/{thanhVien}', [DanhBaController::class, 'show'])->name('member.danh-ba.show');
+    Route::get('/member/phong-chieu', [PhongChieuController::class, 'index'])->name('member.phong-chieu.index');
+    Route::get('/member/phong-chieu/{phim}', [PhongChieuController::class, 'show'])->name('member.phong-chieu.show');
+    Route::get('/member/su-kien', [MemberSuKienController::class, 'index'])->name('member.su-kien.index');
+    Route::post('/member/su-kien/{suKien}/dang-ky', [MemberSuKienController::class, 'register'])->name('member.su-kien.register');
+    Route::delete('/member/su-kien/{suKien}/dang-ky', [MemberSuKienController::class, 'cancel'])->name('member.su-kien.cancel');
+    Route::get('/member/bao-lanh', [BaoLanhController::class, 'index'])->name('member.bao-lanh.index');
+    Route::get('/member/bao-lanh/tao-moi', [BaoLanhController::class, 'create'])->name('member.bao-lanh.create');
+    Route::post('/member/bao-lanh', [BaoLanhController::class, 'store'])->name('member.bao-lanh.store');
+    Route::get('/member/bao-lanh/{hoSo}/sua', [BaoLanhController::class, 'edit'])->name('member.bao-lanh.edit');
+    Route::put('/member/bao-lanh/{hoSo}', [BaoLanhController::class, 'update'])->name('member.bao-lanh.update');
     Route::get('/member/phim', [PhimController::class, 'index'])->name('member.phim.index');
     Route::get('/member/phim/create', [PhimController::class, 'create'])->name('member.phim.create');
     Route::post('/member/phim', [PhimController::class, 'store'])->name('member.phim.store');
@@ -62,6 +83,9 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:ban_dieu_hanh_chi_hoi'])->gr
     Route::get('/admin/chi-hoi/phim/{phim}', [PhimDuyetController::class, 'show'])->name('admin.chi-hoi.phim.show');
     Route::post('/admin/chi-hoi/phim/{phim}/duyet', [PhimDuyetController::class, 'duyetChiHoi'])->name('admin.chi-hoi.phim.duyet');
     Route::post('/admin/chi-hoi/phim/{phim}/tu-choi', [PhimDuyetController::class, 'tuChoiChiHoi'])->name('admin.chi-hoi.phim.tu-choi');
+    Route::get('/admin/chi-hoi/bao-lanh', [BaoLanhDuyetController::class, 'chiHoi'])->name('admin.chi-hoi.bao-lanh.index');
+    Route::post('/admin/chi-hoi/bao-lanh/{hoSo}/duyet', [BaoLanhDuyetController::class, 'duyetChiHoi'])->name('admin.chi-hoi.bao-lanh.duyet');
+    Route::post('/admin/chi-hoi/bao-lanh/{hoSo}/tu-choi', [BaoLanhDuyetController::class, 'tuChoiChiHoi'])->name('admin.chi-hoi.bao-lanh.tu-choi');
 });
 
 Route::middleware(['auth', 'phien.hop.le', 'vai.tro:hoi_dong_quan_tri'])->group(function () {
@@ -70,6 +94,15 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:hoi_dong_quan_tri'])->group(
     Route::get('/admin/hoi-dong/phim/{phim}', [PhimDuyetController::class, 'show'])->name('admin.hoi-dong.phim.show');
     Route::post('/admin/hoi-dong/phim/{phim}/duyet', [PhimDuyetController::class, 'duyetHoiDong'])->name('admin.hoi-dong.phim.duyet');
     Route::post('/admin/hoi-dong/phim/{phim}/tu-choi', [PhimDuyetController::class, 'tuChoiHoiDong'])->name('admin.hoi-dong.phim.tu-choi');
+    Route::get('/admin/hoi-dong/bao-lanh', [BaoLanhDuyetController::class, 'hoiDong'])->name('admin.hoi-dong.bao-lanh.index');
+    Route::post('/admin/hoi-dong/bao-lanh/{hoSo}/duyet', [BaoLanhDuyetController::class, 'duyetHoiDong'])->name('admin.hoi-dong.bao-lanh.duyet');
+    Route::post('/admin/hoi-dong/bao-lanh/{hoSo}/tu-choi', [BaoLanhDuyetController::class, 'tuChoiHoiDong'])->name('admin.hoi-dong.bao-lanh.tu-choi');
+    Route::get('/admin/su-kien', [AdminSuKienController::class, 'index'])->name('admin.su-kien.index');
+    Route::get('/admin/su-kien/tao-moi', [AdminSuKienController::class, 'create'])->name('admin.su-kien.create');
+    Route::post('/admin/su-kien', [AdminSuKienController::class, 'store'])->name('admin.su-kien.store');
+    Route::get('/admin/su-kien/{suKien}/sua', [AdminSuKienController::class, 'edit'])->name('admin.su-kien.edit');
+    Route::put('/admin/su-kien/{suKien}', [AdminSuKienController::class, 'update'])->name('admin.su-kien.update');
+    Route::post('/admin/su-kien/{suKien}/huy', [AdminSuKienController::class, 'cancel'])->name('admin.su-kien.cancel');
 });
 
 Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong'])->group(function () {
@@ -85,6 +118,9 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong'])->group(
     Route::post('/admin/m16/hang-muc/{hangMuc}/de-cu', [M16Controller::class, 'deCuStore'])->name('admin.m16.de-cu.store');
     Route::patch('/admin/m16/de-cu/{deCu}', [M16Controller::class, 'deCuMark'])->name('admin.m16.de-cu.mark');
     Route::delete('/admin/m16/de-cu/{deCu}', [M16Controller::class, 'deCuDelete'])->name('admin.m16.de-cu.delete');
+    Route::get('/admin/su-kien/loai', [AdminSuKienController::class, 'loaiIndex'])->name('admin.su-kien.loai.index');
+    Route::post('/admin/su-kien/loai', [AdminSuKienController::class, 'loaiStore'])->name('admin.su-kien.loai.store');
+    Route::patch('/admin/su-kien/loai/{loaiSuKien}/trang-thai', [AdminSuKienController::class, 'loaiToggle'])->name('admin.su-kien.loai.toggle');
 });
 
 Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong,ban_dieu_hanh_chi_hoi,hoi_dong_quan_tri'])->group(function () {

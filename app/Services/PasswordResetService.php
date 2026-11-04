@@ -21,7 +21,7 @@ class PasswordResetService
             ->exists();
     }
 
-    public function taoYeuCau(string $email): void
+    public function taoYeuCau(string $email, ?string $thongBao = null): void
     {
         $taiKhoan = TaiKhoan::whereRaw('LOWER(email) = ?', [mb_strtolower($email)])->first();
         if ($taiKhoan === null) {
@@ -42,6 +42,7 @@ class PasswordResetService
         try {
             Mail::to($taiKhoan->email)->send(new PasswordResetMail(
                 route('dat-lai-mat-khau', ['token' => $tokenGoc]),
+                $thongBao,
             ));
         } catch (TransportExceptionInterface $exception) {
             report($exception);

@@ -12,8 +12,10 @@ class PasswordResetMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public function __construct(public readonly string $url)
-    {
+    public function __construct(
+        public readonly string $url,
+        public readonly ?string $thongBao = null,
+    ) {
     }
 
     public function envelope(): Envelope
@@ -23,6 +25,9 @@ class PasswordResetMail extends Mailable
 
     public function content(): Content
     {
-        return new Content(view: 'emails.password-reset');
+        return new Content(view: 'emails.password-reset', with: [
+            'url' => $this->url,
+            'thongBao' => $this->thongBao,
+        ]);
     }
 }
