@@ -25,7 +25,7 @@ Route::get('/', function () {
     return match (auth()->user()->vaiTroQuanTri()) {
         'ban_dieu_hanh_chi_hoi' => redirect()->route('admin.chi-hoi.trang-chu'),
         'hoi_dong_quan_tri' => redirect()->route('admin.hoi-dong.trang-chu'),
-        'quan_tri_he_thong' => redirect()->route('admin.he-thong.trang-chu'),
+        'quan_tri_he_thong' => redirect()->route('admin.m16.mua-giai.index'),
         default => redirect()->route('member.trang-chu'),
     };
 });
@@ -107,10 +107,12 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:hoi_dong_quan_tri'])->group(
 
 Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong'])->group(function () {
     Route::get('/admin/he-thong', [TrangChuController::class, 'heThong'])->name('admin.he-thong.trang-chu');
+    Route::get('/admin/m16/mua-giai/create', [M16Controller::class, 'muaGiaiCreate'])->name('admin.m16.mua-giai.create');
     Route::post('/admin/m16/mua-giai', [M16Controller::class, 'muaGiaiStore'])->name('admin.m16.mua-giai.store');
     Route::put('/admin/m16/mua-giai/{muaGiai}', [M16Controller::class, 'muaGiaiUpdate'])->name('admin.m16.mua-giai.update');
     Route::delete('/admin/m16/mua-giai/{muaGiai}', [M16Controller::class, 'muaGiaiDelete'])->name('admin.m16.mua-giai.delete');
     Route::post('/admin/m16/mua-giai/{muaGiai}/hang-muc', [M16Controller::class, 'hangMucStore'])->name('admin.m16.hang-muc.store');
+    Route::get('/admin/m16/mua-giai/{muaGiai}/hang-muc/create', [M16Controller::class, 'hangMucCreate'])->name('admin.m16.hang-muc.create');
     Route::put('/admin/m16/hang-muc/{hangMuc}', [M16Controller::class, 'hangMucUpdate'])->name('admin.m16.hang-muc.update');
     Route::delete('/admin/m16/hang-muc/{hangMuc}', [M16Controller::class, 'hangMucDelete'])->name('admin.m16.hang-muc.delete');
     Route::post('/admin/m16/hang-muc/{hangMuc}/de-cu', [M16Controller::class, 'deCuStore'])->name('admin.m16.de-cu.store');
@@ -122,6 +124,7 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong'])->group(
 });
 
 Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong,ban_dieu_hanh_chi_hoi,hoi_dong_quan_tri'])->group(function () {
+    Route::get('/admin/m16/mua-giai/{muaGiai}', [M16Controller::class, 'muaGiaiShow'])->name('admin.m16.mua-giai.show');
     Route::get('/admin/m16/mua-giai/{muaGiai}/hang-muc', [M16Controller::class, 'hangMucIndex'])->name('admin.m16.hang-muc.index');
     Route::get('/admin/m16/hang-muc/{hangMuc}/de-cu', [M16Controller::class, 'deCuIndex'])->name('admin.m16.de-cu.index');
     Route::get('/admin/m16/mua-giai/{muaGiai}/tong-hop', [M16Controller::class, 'tongHop'])->name('admin.m16.tong-hop');

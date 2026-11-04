@@ -1,20 +1,29 @@
 @extends('layouts.app')
 @section('tieu-de', 'Trang chủ Super Admin')
 @section('noi-dung')
-<h1>Trang chủ Super Admin</h1>
+<h1>Trung tâm quản trị Scaros</h1>
+<p class="dashboard-intro">Tổng quan hệ thống và tình hình mùa giải hiện tại.</p>
 @if ($muaGiai)
-    <h2>{{ $muaGiai->ten_mua_giai }}</h2>
+    <div class="dashboard-section-title">
+        <h2>{{ $muaGiai->ten_mua_giai }}</h2>
+        <span>MÙA GIẢI ĐANG DIỄN RA</span>
+    </div>
 @else
-    <p>Hiện chưa có mùa giải đang diễn ra.</p>
+    <div class="dashboard-alert">Hiện chưa có mùa giải đang diễn ra.</div>
 @endif
-<div class="the-thong-ke">
+<div class="dashboard-grid">
     @foreach ($thongKe as $nhan => $giaTri)
-        <article><h3>{{ $nhanThongKe[$nhan] }}</h3><p>{{ $giaTri }}</p></article>
+        <article class="dashboard-card">
+            <h2>{{ $nhanThongKe[$nhan] }}</h2>
+            <p class="dashboard-card-value">{{ $giaTri }}</p>
+        </article>
     @endforeach
 </div>
 @if ($canhBao)
-    <h2>Cảnh báo</h2>
-    <ul>@foreach ($canhBao as $bao)<li>{{ $bao }}</li>@endforeach</ul>
+    <section class="dashboard-alert">
+        <h2>Cảnh báo cần lưu ý</h2>
+        <ul>@foreach ($canhBao as $bao)<li>{{ $bao }}</li>@endforeach</ul>
+    </section>
 @endif
-<p><a class="nut" href="{{ route('admin.m16.mua-giai.index') }}">Quản lý M16</a></p>
+<div class="dashboard-actions"><a class="nut" href="{{ route('admin.m16.mua-giai.index') }}">Quản lý M16 <span aria-hidden="true">↗</span></a></div>
 @endsection

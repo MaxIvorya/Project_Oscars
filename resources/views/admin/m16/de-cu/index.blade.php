@@ -37,7 +37,7 @@
                         <form method="post" action="{{ route('admin.m16.de-cu.mark', $deCu) }}">
                             @csrf @method('PATCH')
                             <input type="hidden" name="loai" value="de_cu_chinh_thuc"><input type="hidden" name="gia_tri" value="{{ $deCu->de_cu_chinh_thuc ? 0 : 1 }}">
-                            <button type="submit">{{ $deCu->de_cu_chinh_thuc ? 'Bỏ chính thức' : 'Đánh dấu chính thức' }}</button>
+                            <button type="submit" class="nut-phu">{{ $deCu->de_cu_chinh_thuc ? 'Bỏ chính thức' : 'Đánh dấu chính thức' }}</button>
                         </form>
                         @if ($deCu->de_cu_chinh_thuc)
                             <form method="post" action="{{ route('admin.m16.de-cu.mark', $deCu) }}">
@@ -47,7 +47,7 @@
                             </form>
                         @endif
                         <form method="post" action="{{ route('admin.m16.de-cu.delete', $deCu) }}" onsubmit="return confirm('Xóa đề cử này?')">
-                            @csrf @method('DELETE')<button type="submit">Xóa</button>
+                            @csrf @method('DELETE')<button type="submit" class="nut-nguy-hiem">Xóa</button>
                         </form>
                     @endif
                 </td>

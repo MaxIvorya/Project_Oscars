@@ -27,12 +27,7 @@ final class DieuHuong
         }
 
         $menuChung = [
-            ['nhan' => 'Trang chủ', 'route' => match ($vaiTro) {
-                'ban_dieu_hanh_chi_hoi' => 'admin.chi-hoi.trang-chu',
-                'hoi_dong_quan_tri' => 'admin.hoi-dong.trang-chu',
-                default => 'admin.he-thong.trang-chu',
-            }, 'kich_hoat' => ['admin.*.trang-chu']],
-            ['nhan' => 'Mùa giải & hạng mục (xem)', 'route' => 'admin.m16.mua-giai.index', 'kich_hoat' => ['admin.m16.*']],
+            ['nhan' => 'Quản lý mùa giải (xem)', 'route' => 'admin.m16.mua-giai.index', 'kich_hoat' => ['admin.m16.*']],
         ];
 
         if ($vaiTro === 'ban_dieu_hanh_chi_hoi') {

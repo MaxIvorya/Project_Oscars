@@ -24,8 +24,11 @@ class NavigationTest extends TestCase
         $this->dangNhap($member);
         $this->get(route('member.trang-chu'))
             ->assertOk()
-            ->assertSee('Trang chủ thành viên')
+            ->assertSee('Không gian điện ảnh của bạn')
             ->assertSee('Nộp phim mới')
+            ->assertSee('scaros-dashboard.css')
+            ->assertSee('scaros-dashboard.js')
+            ->assertSee('aria-label="Bật giao diện sáng"', false)
             ->assertDontSee('Duyệt phim');
         $this->dangXuat();
 
@@ -33,7 +36,7 @@ class NavigationTest extends TestCase
         $this->dangNhap($chiHoi);
         $this->get(route('admin.chi-hoi.trang-chu'))
             ->assertOk()
-            ->assertSee('Trang chủ Admin Chi hội')
+            ->assertSee('Điều phối Chi hội')
             ->assertSee('Duyệt phim — cấp Chi hội')
             ->assertDontSee('Duyệt phim — cấp Hội đồng')
             ->assertDontSee('Nộp phim mới');
@@ -43,7 +46,7 @@ class NavigationTest extends TestCase
         $this->dangNhap($hoiDong);
         $this->get(route('admin.hoi-dong.trang-chu'))
             ->assertOk()
-            ->assertSee('Trang chủ Admin Hội đồng')
+            ->assertSee('Điều phối Hội đồng')
             ->assertSee('Duyệt phim — cấp Hội đồng')
             ->assertDontSee('Duyệt phim — cấp Chi hội');
         $this->dangXuat();
@@ -52,7 +55,7 @@ class NavigationTest extends TestCase
         $this->dangNhap($superAdmin);
         $this->get(route('admin.he-thong.trang-chu'))
             ->assertOk()
-            ->assertSee('Trang chủ Super Admin')
+            ->assertSee('Trung tâm quản trị Scaros')
             ->assertSee('Mùa giải & hạng mục & đề cử')
             ->assertDontSee('Duyệt phim');
     }
@@ -81,6 +84,23 @@ class NavigationTest extends TestCase
         }
     }
 
+    public function test_m16_summary_uses_the_shared_internal_layout(): void
+    {
+        [$superAdmin] = $this->taoTaiKhoan('quan_tri_he_thong');
+        $muaGiai = MuaGiai::create([
+            'ten_mua_giai' => 'Mùa tổng hợp',
+            'nam' => 2026,
+            'trang_thai' => 'dang_dien_ra',
+        ]);
+
+        $this->dangNhap($superAdmin);
+        $this->get(route('admin.m16.tong-hop', $muaGiai))
+            ->assertOk()
+            ->assertSee('Tổng hợp phiếu Mùa tổng hợp')
+            ->assertSee('SCAROS COMMUNITY')
+            ->assertSee('Đăng xuất');
+    }
+
     public function test_ended_season_m16_pages_hide_write_controls(): void
     {
         [$superAdmin] = $this->taoTaiKhoan('quan_tri_he_thong');
@@ -106,6 +126,27 @@ class NavigationTest extends TestCase
             ->assertOk()
             ->assertDontSee('Thêm đề cử')
             ->assertDontSee('Đánh dấu chính thức');
+    }
+
+    public function test_season_detail_has_three_sections(): void
+    {
+        [$superAdmin] = $this->taoTaiKhoan('quan_tri_he_thong');
+        $muaGiai = MuaGiai::create([
+            'ten_mua_giai' => 'Mùa giải chi tiết',
+            'nam' => 2026,
+            'trang_thai' => 'sap_dien_ra',
+        ]);
+
+        $this->dangNhap($superAdmin);
+
+        $this->get(route('admin.m16.mua-giai.show', $muaGiai))
+            ->assertOk()
+            ->assertSee('id="thong-tin-mua-giai"', false)
+            ->assertSee('id="danh-sach-hang-muc"', false)
+            ->assertSee('id="danh-sach-de-cu"', false)
+            ->assertSee('1. Mùa giải')
+            ->assertSee('2. Hạng mục')
+            ->assertSee('3. Đề cử');
     }
 
     private function dangNhap(TaiKhoan $account): void
