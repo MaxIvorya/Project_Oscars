@@ -55,12 +55,12 @@ final class DieuHuong
                 'kich_hoat' => ['admin.hoi-dong.bao-lanh.*'],
             ]]);
         } elseif ($vaiTro === 'quan_tri_he_thong') {
-            $menuChung[1]['nhan'] = 'Mùa giải & hạng mục & đề cử';
-            $menuChung[] = [
-                'nhan' => 'Tổng hợp phiếu mùa giải',
-                'route' => 'admin.m16.mua-giai.index',
-                'kich_hoat' => ['admin.m16.tong-hop'],
-            ];
+            $menuChung[0]['nhan'] = 'Mùa giải & hạng mục & đề cử';
+            // $menuChung[] = [
+            //     'nhan' => 'Tổng hợp phiếu mùa giải',
+            //     'route' => 'admin.m16.mua-giai.index',
+            //     'kich_hoat' => ['admin.m16.tong-hop'],
+            // ];
             $menuChung[] = [
                 'nhan' => 'Loại sự kiện',
                 'route' => 'admin.su-kien.loai.index',

@@ -1,59 +1,62 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Hệ thống quản lý giải thưởng điện ảnh (Scaros)
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Website quản lý giải thưởng điện ảnh theo mô hình Oscars: hội viên nộp phim dự thi, Admin duyệt hồ sơ theo 2 cấp (Chi hội → Hội đồng), sau đó hội viên bỏ phiếu ở vòng sơ loại và vòng chung kết.
 
-## About Laravel
+## Chức năng chính
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Đăng nhập / đăng xuất, giới hạn tối đa 2 phiên đăng nhập đồng thời, khôi phục mật khẩu.
+- Không cho đăng ký tự do: tài khoản Member chỉ tạo qua Seeder hoặc sau khi hồ sơ bảo lãnh được duyệt.
+- Member nộp phim dự thi; Admin Chi hội và Admin Hội đồng duyệt 2 cấp.
+- Bỏ phiếu vòng sơ loại (theo chi hội) và vòng chung kết (toàn thể), mỗi hạng mục 1 phiếu.
+- Super Admin quản lý mùa giải, hạng mục, đề cử và bài viết.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Công nghệ sử dụng
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- Laravel 12 (PHP)
+- MySQL
+- Blade, HTML, CSS, JavaScript
 
-## Learning Laravel
+## Cài đặt và chạy
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+```bash
+git clone <link-repository>
+cd <ten-thu-muc-du-an>
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+composer install
+cp .env.example .env
+php artisan key:generate
 
-## Laravel Sponsors
+# Cấu hình thông tin database trong file .env, sau đó:
+php artisan migrate --seed
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+php artisan serve
+```
 
-### Premium Partners
+Truy cập: http://127.0.0.1:8000
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Tài khoản demo
 
-## Contributing
+| Vai trò | Email |
+|---|---|
+| Member (Chi hội A) | member-a@scaros.test |
+| Member (Chi hội B) | member-b@scaros.test |
+| Admin Chi hội | admin-chi-hoi@scaros.test |
+| Admin Hội đồng | admin-hoi-dong@scaros.test |
+| Super Admin | super-admin@scaros.test |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+> Mật khẩu demo được đặt trong Seeder.
 
-## Code of Conduct
+## Thành viên thực hiện
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+| STT| MSSV | Họ và tên | Vai trò | Nội dung |
+|---|---|---|---|
+| 1 | 65132683 | Trần Bảo Phi | Nhóm trưởng | M1 Đăng nhập/Đăng xuất, M2 Quản lý phiên đồng thời, M3 Khôi phục mật khẩu, M5 Nộp phim dự thi, M6 Duyệt phim (2 cấp), M7 Bỏ phiếu sơ loại, M8 Bỏ phiếu chung kết, M16 Quản lý mùa giải & hạng mục |
+| 2 | 65131264 | Chu Minh Huy | Thành viên | M4 Phòng chiếu phim thành viên M9 Danh bạ thành viên M10 Hồ sơ cá nhân thành viên M11 Quản lý sự kiện (Admin)
+M12 Đăng ký/Huỷ tham dự sự kiện M13 Lập hồ sơ bảo lãnh
+M14 Duyệt bảo lãnh cấp Chi hội M15 Duyệt bảo lãnh cấp Hội đồng |
+| 3 | 65132645 | Bùi Phước Phát | Thành viên | Giao diện |
 
-## Security Vulnerabilities
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## Giấy phép
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Dự án mã nguồn mở, phát hành theo giấy phép [MIT](LICENSE).
