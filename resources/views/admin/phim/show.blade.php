@@ -9,7 +9,16 @@
     <dt>Người nộp</dt><dd>{{ $phim->nguoiNop?->ho_ten }}</dd>
     <dt>Chi hội</dt><dd>{{ $phim->nguoiNop?->chiHoi?->ten_chi_hoi }}</dd>
     <dt>Năm phát hành</dt><dd>{{ $phim->nam_phat_hanh }}</dd>
-    <dt>Ê-kíp</dt><dd>{{ $phim->e_kip }}</dd>
+    <dt>Thể loại</dt><dd>{{ $phim->e_kip ? str_replace('Thể loại: ', '', $phim->e_kip) : 'Chưa cập nhật' }}</dd>
+    <dt>Diễn viên và đạo diễn</dt>
+    <dd>
+        @forelse ($phim->phimNgheSis->groupBy('vai_tro') as $vaiTro => $thanhVien)
+            <p><strong>{{ $nhanVaiTroNgheSi[$vaiTro] ?? $vaiTro }}:</strong>
+                {{ $thanhVien->pluck('ngheSi.ho_ten')->join(', ') }}</p>
+        @empty
+            Chưa cập nhật
+        @endforelse
+    </dd>
     <dt>Trạng thái</dt><dd>{{ $nhanTrangThai }}</dd>
     @if ($phim->duong_dan_video)
         <dt>Video</dt><dd><a href="{{ $phim->duong_dan_video }}" target="_blank" rel="noopener">Mở video mẫu</a></dd>

@@ -53,8 +53,9 @@ class NavigationTest extends TestCase
         $this->get(route('admin.he-thong.trang-chu'))
             ->assertOk()
             ->assertSee('Trang chủ Super Admin')
-            ->assertSee('Mùa giải & hạng mục & đề cử')
-            ->assertDontSee('Duyệt phim');
+            ->assertSee('Quản lý mùa giải, hạng mục & đề cử')
+            ->assertDontSee('Duyệt phim')
+            ->assertDontSee('Tổng hợp phiếu mùa giải');
     }
 
     public function test_admin_chapter_and_council_have_read_only_m16_access(): void
@@ -106,6 +107,27 @@ class NavigationTest extends TestCase
             ->assertOk()
             ->assertDontSee('Thêm đề cử')
             ->assertDontSee('Đánh dấu chính thức');
+    }
+
+    public function test_season_detail_has_three_sections(): void
+    {
+        [$superAdmin] = $this->taoTaiKhoan('quan_tri_he_thong');
+        $muaGiai = MuaGiai::create([
+            'ten_mua_giai' => 'Mùa giải chi tiết',
+            'nam' => 2026,
+            'trang_thai' => 'sap_dien_ra',
+        ]);
+
+        $this->dangNhap($superAdmin);
+
+        $this->get(route('admin.m16.mua-giai.show', $muaGiai))
+            ->assertOk()
+            ->assertSee('id="thong-tin-mua-giai"', false)
+            ->assertSee('id="danh-sach-hang-muc"', false)
+            ->assertSee('id="danh-sach-de-cu"', false)
+            ->assertSee('1. Mùa giải')
+            ->assertSee('2. Hạng mục')
+            ->assertSee('3. Đề cử');
     }
 
     private function dangNhap(TaiKhoan $account): void

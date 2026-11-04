@@ -27,6 +27,28 @@ class M16Controller extends Controller
         ]);
     }
 
+    public function muaGiaiCreate()
+    {
+        Gate::authorize('create', MuaGiai::class);
+
+        return view('admin.m16.mua-giai.create');
+    }
+
+    public function muaGiaiShow(MuaGiai $muaGiai)
+    {
+        Gate::authorize('view', $muaGiai);
+
+        return view('admin.m16.mua-giai.show', [
+            'muaGiai' => $muaGiai->load([
+                'hangMucGiais.chiHoi',
+                'hangMucGiais.deCus.phim',
+                'hangMucGiais.deCus.ngheSi',
+            ]),
+            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
+            'coQuyenGhi' => auth()->user()->vaiTroQuanTri() === 'quan_tri_he_thong',
+        ]);
+    }
+
     public function muaGiaiStore(MuaGiaiRequest $request, MuaGiaiService $service): RedirectResponse
     {
         Gate::authorize('create', MuaGiai::class);
@@ -60,6 +82,16 @@ class M16Controller extends Controller
             'hangMucs' => $muaGiai->hangMucGiais()->withCount('deCus')->with('chiHoi')->get(),
             'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
             'coQuyenGhi' => auth()->user()->vaiTroQuanTri() === 'quan_tri_he_thong',
+        ]);
+    }
+
+    public function hangMucCreate(MuaGiai $muaGiai)
+    {
+        Gate::authorize('create', HangMucGiai::class);
+
+        return view('admin.m16.hang-muc.create', [
+            'muaGiai' => $muaGiai,
+            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
         ]);
     }
 

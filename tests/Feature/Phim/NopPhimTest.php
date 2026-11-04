@@ -44,6 +44,57 @@ class NopPhimTest extends TestCase
         Carbon::setTestNow();
     }
 
+    public function test_submission_saves_structured_crew_fields(): void
+    {
+        Carbon::setTestNow('2026-11-01 12:00:00');
+        [$account, $member] = $this->taoTaiKhoan();
+        $season = $this->taoMuaGiai();
+        $this->dangNhap($account);
+
+        $this->post(route('member.phim.store'), [
+            'ma_mua_giai' => $season->getKey(),
+            'ten_phim' => 'Phim có ê-kíp',
+            'nam_phat_hanh' => 2026,
+            'the_loai' => 'Tâm lý',
+            'dao_dien' => 'Đạo diễn A',
+            'nam_chinh' => 'Nam chính A, Nam chính B',
+            'nu_chinh' => 'Nữ chính A',
+            'nam_phu' => 'Nam phụ A',
+            'nu_phu' => 'Nữ phụ A',
+        ])->assertRedirect(route('member.phim.index'));
+
+        $phim = Phim::where('ten_phim', 'Phim có ê-kíp')->firstOrFail();
+        $this->assertSame('Thể loại: Tâm lý', $phim->e_kip);
+        $this->assertDatabaseHas('phimnghesi', [
+            'ma_phim' => $phim->getKey(),
+            'vai_tro' => 'dao_dien',
+        ]);
+        $this->assertDatabaseHas('nghesi', ['ho_ten' => 'Nam chính B']);
+        $this->assertSame($member->getKey(), $phim->ma_nguoi_nop);
+        Carbon::setTestNow();
+    }
+
+    public function test_submission_rejects_unknown_film_genre(): void
+    {
+        Carbon::setTestNow('2026-11-01 12:00:00');
+        [$account] = $this->taoTaiKhoan();
+        $season = $this->taoMuaGiai();
+        $this->dangNhap($account);
+
+        $this->from(route('member.phim.create'))
+            ->post(route('member.phim.store'), [
+                'ma_mua_giai' => $season->getKey(),
+                'ten_phim' => 'Phim thể loại sai',
+                'nam_phat_hanh' => 2026,
+                'the_loai' => 'Thể loại tự nhập không hợp lệ',
+            ])
+            ->assertRedirect(route('member.phim.create'))
+            ->assertSessionHasErrors('the_loai');
+
+        $this->assertDatabaseMissing('phim', ['ten_phim' => 'Phim thể loại sai']);
+        Carbon::setTestNow();
+    }
+
     public function test_inactive_member_cannot_submit(): void
     {
         [$account] = $this->taoTaiKhoan('khong_hoat_dong');
