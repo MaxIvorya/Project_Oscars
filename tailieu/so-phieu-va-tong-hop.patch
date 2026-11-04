@@ -1,0 +1,133 @@
+diff --git a/app/Http/Controllers/Admin/M16Controller.php b/app/Http/Controllers/Admin/M16Controller.php
+index f11175e..43728d5 100644
+--- a/app/Http/Controllers/Admin/M16Controller.php
++++ b/app/Http/Controllers/Admin/M16Controller.php
+@@ -40,6 +40,10 @@ public function muaGiaiShow(MuaGiai $muaGiai)
+ 
+         return view('admin.m16.mua-giai.show', [
+             'muaGiai' => $muaGiai->load([
++                'hangMucGiais' => fn ($query) => $query->withCount([
++                    'phieuBauCus as phieu_so_loai' => fn ($phieu) => $phieu->where('vong_bau', 'so_loai'),
++                    'phieuBauCus as phieu_chung_ket' => fn ($phieu) => $phieu->where('vong_bau', 'chung_ket'),
++                ]),
+                 'hangMucGiais.chiHoi',
+                 'hangMucGiais.deCus.phim',
+                 'hangMucGiais.deCus.ngheSi',
+diff --git a/public/css/app.css b/public/css/app.css
+index 49df449..1e54149 100644
+--- a/public/css/app.css
++++ b/public/css/app.css
+@@ -40,3 +40,12 @@ @media (max-width: 700px) {
+     .menu ul.menu-mo { display: grid; }
+     .noi-dung, .khung-khach { width: min(100% - 1rem, 72rem); padding: 1rem 0; }
+ }
++
++.so { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
++.chu-phu { display: block; color: #667085; font-size: .85rem; font-weight: 400; }
++h2 .chu-phu { margin-top: .2rem; }
++.khoi-phieu { margin: 1.5rem 0; }
++.bang-phieu th { background: #f8fafc; font-size: .85rem; color: #475467; }
++.bang-phieu tbody tr:hover { background: #f8fafc; }
++.bang-phieu .dong-thang, .bang-phieu .dong-thang:hover { background: #fff8e1; }
++.huy-hieu-thang { background: #fdd663; color: #5b3d00; font-weight: 700; }
+diff --git a/resources/views/admin/m16/mua-giai/show.blade.php b/resources/views/admin/m16/mua-giai/show.blade.php
+index 67b91d6..7961e43 100644
+--- a/resources/views/admin/m16/mua-giai/show.blade.php
++++ b/resources/views/admin/m16/mua-giai/show.blade.php
+@@ -51,18 +51,22 @@
+     @endif
+     <div class="bang-cuon">
+         <table>
+-            <thead><tr><th>Hạng mục</th><th>Loại</th><th>Phạm vi</th><th>Số đề cử</th><th></th></tr></thead>
++            <thead><tr><th>Hạng mục</th><th>Loại</th><th>Phạm vi</th><th class="so">Số đề cử</th><th class="so">Số phiếu</th><th></th></tr></thead>
+             <tbody>
+             @forelse ($muaGiai->hangMucGiais as $hangMuc)
+                 <tr>
+                     <td>{{ $hangMuc->ten_hang_muc }}</td>
+                     <td>{{ $hangMuc->loai_hang_muc === 'nghe_si' ? 'Nghệ sĩ' : 'Phim' }}</td>
+                     <td>{{ $hangMuc->la_toan_the ? 'Toàn thể' : $hangMuc->chiHoi?->ten_chi_hoi }}</td>
+-                    <td>{{ $hangMuc->deCus->count() }}</td>
++                    <td class="so">{{ $hangMuc->deCus->count() }}</td>
++                    <td class="so">
++                        <a href="{{ route('admin.m16.tong-hop', $muaGiai) }}#hang-muc-{{ $hangMuc->ma_hang_muc }}">{{ $hangMuc->phieu_so_loai + $hangMuc->phieu_chung_ket }}</a>
++                        <small class="chu-phu">Sơ loại {{ $hangMuc->phieu_so_loai }} · Chung kết {{ $hangMuc->phieu_chung_ket }}</small>
++                    </td>
+                     <td><a href="{{ route('admin.m16.de-cu.index', $hangMuc) }}">Xem đề cử</a></td>
+                 </tr>
+             @empty
+-                <tr><td colspan="5">Chưa có hạng mục.</td></tr>
++                <tr><td colspan="6">Chưa có hạng mục.</td></tr>
+             @endforelse
+             </tbody>
+         </table>
+diff --git a/resources/views/admin/m16/tong-hop.blade.php b/resources/views/admin/m16/tong-hop.blade.php
+index e3a6859..7962f68 100644
+--- a/resources/views/admin/m16/tong-hop.blade.php
++++ b/resources/views/admin/m16/tong-hop.blade.php
+@@ -1,26 +1,42 @@
++@extends('layouts.app')
++
++@section('tieu-de', 'Tổng hợp phiếu')
++
++@section('noi-dung')
++<p><a href="{{ route('admin.m16.mua-giai.show', $muaGiai) }}">← Chi tiết mùa giải</a></p>
+ <h1>Tổng hợp phiếu {{ $muaGiai->ten_mua_giai }}</h1>
+ @include('partials.thong-bao')
+-<p>Chỉ Super Admin được đánh dấu chính thức/người thắng.</p>
+-<p><a href="{{ route('admin.m16.hang-muc.index', $muaGiai) }}">Quay lại danh sách hạng mục</a></p>
+-<table>
+-    <thead>
+-        <tr><th>Hạng mục</th><th>Ứng viên</th><th>Sơ loại</th><th>Chung kết</th><th>Chính thức</th><th>Người thắng</th></tr>
+-    </thead>
+-    <tbody>
+-        @php($hangMucHienTai = null)
+-        @foreach ($dong->sortByDesc('phieu_chung_ket')->groupBy('ma_hang_muc') as $nhom)
+-            @php($hangMucHienTai = $nhom->first()->ten_hang_muc)
+-            <tr><th colspan="6">{{ $hangMucHienTai }}</th></tr>
+-            @foreach ($nhom->sortByDesc('phieu_chung_ket') as $d)
+-            <tr>
+-                <td>{{ $d->ten_hang_muc }}</td>
+-                <td>{{ $d->ung_vien }}</td>
+-                <td>{{ $d->phieu_so_loai }}</td>
+-                <td>{{ $d->phieu_chung_ket }}</td>
+-                <td>{{ $d->de_cu_chinh_thuc ? 'Có' : '' }}</td>
+-                <td>{{ $d->nguoi_thang ? 'Có' : '' }}</td>
+-            </tr>
+-            @endforeach
+-        @endforeach
+-    </tbody>
+-</table>
++<p class="chu-phu">Chỉ Super Admin được đánh dấu chính thức/người thắng. Ứng viên xếp theo số phiếu chung kết, rồi đến sơ loại.</p>
++
++@forelse ($dong->groupBy('ma_hang_muc') as $nhom)
++    @php($ungViens = $nhom->sortBy([['phieu_chung_ket', 'desc'], ['phieu_so_loai', 'desc'], ['ung_vien', 'asc']]))
++    <section class="khoi-phieu" id="hang-muc-{{ $nhom->first()->ma_hang_muc }}">
++        <h2>
++            {{ $nhom->first()->ten_hang_muc }}
++            <small class="chu-phu">{{ $nhom->sum('phieu_so_loai') }} phiếu sơ loại · {{ $nhom->sum('phieu_chung_ket') }} phiếu chung kết</small>
++        </h2>
++        <div class="bang-cuon">
++            <table class="bang-phieu">
++                <thead>
++                    <tr><th>Ứng viên</th><th class="so">Sơ loại</th><th class="so">Chung kết</th><th>Trạng thái</th></tr>
++                </thead>
++                <tbody>
++                @foreach ($ungViens as $d)
++                    <tr @class(['dong-thang' => $d->nguoi_thang])>
++                        <td>{{ $d->ung_vien }}</td>
++                        <td class="so">{{ $d->phieu_so_loai }}</td>
++                        <td class="so"><strong>{{ $d->phieu_chung_ket }}</strong></td>
++                        <td>
++                            @if ($d->de_cu_chinh_thuc)<span class="huy-hieu-trang-thai">Chính thức</span>@endif
++                            @if ($d->nguoi_thang)<span class="huy-hieu-trang-thai huy-hieu-thang">Người thắng</span>@endif
++                        </td>
++                    </tr>
++                @endforeach
++                </tbody>
++            </table>
++        </div>
++    </section>
++@empty
++    <p>Chưa có đề cử nào trong mùa giải này.</p>
++@endforelse
++@endsection

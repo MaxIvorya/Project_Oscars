@@ -22,12 +22,7 @@ final class DieuHuong
         }
 
         $menuChung = [
-            ['nhan' => 'Trang chủ', 'route' => match ($vaiTro) {
-                'ban_dieu_hanh_chi_hoi' => 'admin.chi-hoi.trang-chu',
-                'hoi_dong_quan_tri' => 'admin.hoi-dong.trang-chu',
-                default => 'admin.he-thong.trang-chu',
-            }, 'kich_hoat' => ['admin.*.trang-chu']],
-            ['nhan' => 'Mùa giải & hạng mục (xem)', 'route' => 'admin.m16.mua-giai.index', 'kich_hoat' => ['admin.m16.*']],
+            ['nhan' => 'Quản lý mùa giải (xem)', 'route' => 'admin.m16.mua-giai.index', 'kich_hoat' => ['admin.m16.*']],
         ];
 
         if ($vaiTro === 'ban_dieu_hanh_chi_hoi') {
@@ -43,12 +38,7 @@ final class DieuHuong
                 'kich_hoat' => ['admin.hoi-dong.phim.*'],
             ]]);
         } elseif ($vaiTro === 'quan_tri_he_thong') {
-            $menuChung[1]['nhan'] = 'Mùa giải & hạng mục & đề cử';
-            $menuChung[] = [
-                'nhan' => 'Tổng hợp phiếu mùa giải',
-                'route' => 'admin.m16.mua-giai.index',
-                'kich_hoat' => ['admin.m16.tong-hop'],
-            ];
+            $menuChung[0]['nhan'] = 'Quản lý mùa giải, hạng mục & đề cử';
         }
 
         return $menuChung;

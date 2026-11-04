@@ -105,7 +105,7 @@ class AuthController extends Controller
         return match ($taiKhoan->vaiTroQuanTri()) {
             'ban_dieu_hanh_chi_hoi' => route('admin.chi-hoi.trang-chu'),
             'hoi_dong_quan_tri' => route('admin.hoi-dong.trang-chu'),
-            'quan_tri_he_thong' => route('admin.he-thong.trang-chu'),
+            'quan_tri_he_thong' => route('admin.m16.mua-giai.index'),
             default => null,
         };
     }

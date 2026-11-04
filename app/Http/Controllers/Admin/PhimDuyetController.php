@@ -40,12 +40,25 @@ class PhimDuyetController extends Controller
     {
         $cap = request()->routeIs('admin.chi-hoi.*') ? 'chi-hoi' : 'hoi-dong';
         Gate::authorize($cap === 'chi-hoi' ? 'duyetCapChiHoi' : 'duyetCapHoiDong', $phim);
-        $phim->load(['muaGiai', 'nguoiNop.chiHoi', 'nguoiDuyetChiHoi', 'nguoiDuyetHoiDong']);
+        $phim->load([
+            'muaGiai',
+            'nguoiNop.chiHoi',
+            'nguoiDuyetChiHoi',
+            'nguoiDuyetHoiDong',
+            'phimNgheSis.ngheSi',
+        ]);
 
         return view('admin.phim.show', [
             'phim' => $phim,
             'cap' => $cap,
             'nhanTrangThai' => $service->nhanTrangThai($phim->trang_thai),
+            'nhanVaiTroNgheSi' => [
+                'dao_dien' => 'Đạo diễn',
+                'nam_chinh' => 'Nam chính',
+                'nu_chinh' => 'Nữ chính',
+                'nam_phu' => 'Nam phụ',
+                'nu_phu' => 'Nữ phụ',
+            ],
         ]);
     }
 

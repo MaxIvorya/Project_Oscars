@@ -128,6 +128,27 @@ class NavigationTest extends TestCase
             ->assertDontSee('Đánh dấu chính thức');
     }
 
+    public function test_season_detail_has_three_sections(): void
+    {
+        [$superAdmin] = $this->taoTaiKhoan('quan_tri_he_thong');
+        $muaGiai = MuaGiai::create([
+            'ten_mua_giai' => 'Mùa giải chi tiết',
+            'nam' => 2026,
+            'trang_thai' => 'sap_dien_ra',
+        ]);
+
+        $this->dangNhap($superAdmin);
+
+        $this->get(route('admin.m16.mua-giai.show', $muaGiai))
+            ->assertOk()
+            ->assertSee('id="thong-tin-mua-giai"', false)
+            ->assertSee('id="danh-sach-hang-muc"', false)
+            ->assertSee('id="danh-sach-de-cu"', false)
+            ->assertSee('1. Mùa giải')
+            ->assertSee('2. Hạng mục')
+            ->assertSee('3. Đề cử');
+    }
+
     private function dangNhap(TaiKhoan $account): void
     {
         RateLimiter::clear($account->email.'|127.0.0.1');

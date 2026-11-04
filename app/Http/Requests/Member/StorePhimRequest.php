@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Member;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class StorePhimRequest extends FormRequest
 {
@@ -18,7 +19,12 @@ class StorePhimRequest extends FormRequest
             'ma_mua_giai' => ['required', 'integer', 'exists:muagiai,ma_mua_giai'],
             'ten_phim' => ['required', 'string', 'max:200'],
             'nam_phat_hanh' => ['required', 'integer', 'min:1888', 'max:'.((int) date('Y') + 1)],
-            'e_kip' => ['nullable', 'string'],
+            'the_loai' => ['nullable', 'string', Rule::in(config('the_loai_phim'))],
+            'dao_dien' => ['nullable', 'string', 'max:500'],
+            'nam_chinh' => ['nullable', 'string', 'max:500'],
+            'nu_chinh' => ['nullable', 'string', 'max:500'],
+            'nam_phu' => ['nullable', 'string', 'max:500'],
+            'nu_phu' => ['nullable', 'string', 'max:500'],
             'duong_dan_video' => ['nullable', 'string', 'max:255'],
         ];
     }
@@ -33,6 +39,8 @@ class StorePhimRequest extends FormRequest
             'nam_phat_hanh.required' => 'Vui lòng nhập năm phát hành.',
             'nam_phat_hanh.integer' => 'Năm phát hành phải là số.',
             'nam_phat_hanh.min' => 'Năm phát hành không hợp lệ.',
+            'the_loai.in' => 'Vui lòng chọn một thể loại phim có trong danh sách.',
+            '*.max' => 'Thông tin không được vượt quá độ dài cho phép.',
         ];
     }
 }
