@@ -4,9 +4,29 @@ namespace App\Policies;
 
 use App\Models\Phim;
 use App\Models\TaiKhoan;
+use App\Models\MuaGiai;
 
 class PhimPolicy
 {
+    public function xemPhongChieu(TaiKhoan $taiKhoan, Phim|string|null $phim = null): bool
+    {
+        $thanhVien = $taiKhoan->thanhVien;
+        if (! $taiKhoan->laMember() || $thanhVien?->trang_thai !== 'hoat_dong') {
+            return false;
+        }
+
+        $muaGiaiDangMo = MuaGiai::where('trang_thai', 'dang_dien_ra')->value('ma_mua_giai');
+
+        if ($muaGiaiDangMo === null) {
+            return false;
+        }
+
+        return $phim === null || $phim === Phim::class || (
+            $phim->trang_thai === 'da_duyet'
+            && (int) $phim->ma_mua_giai === (int) $muaGiaiDangMo
+        );
+    }
+
     public function view(TaiKhoan $taiKhoan, Phim $phim): bool
     {
         return $taiKhoan->laMember()

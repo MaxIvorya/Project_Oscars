@@ -10,7 +10,7 @@
 ## 0. ĐIỀU KIỆN TIÊN QUYẾT
 
 1. Đã áp `phi_review_fixes.patch` (nếu chưa: `git apply phi_review_fixes.patch`). Patch này thêm `resources/views/partials/thong-bao.blade.php`, `MuaGiaiService::xoa`, `DeCuService::tongHopPhieu` và view `admin/m16/tong-hop.blade.php` mà hướng dẫn này dùng lại.
-2. Chạy được project theo các bước: `composer install` → `.env` (MySQL) → `php artisan migrate:fresh --seed` → `php artisan serve`. Mật khẩu mọi tài khoản demo: `password`.
+2. Chạy được project theo các bước: `composer install` → `.env` (MySQL) → `php artisan migrate:fresh --seed` → `php artisan storage:link` → `php artisan serve`. Lệnh `storage:link` cần thiết để hiển thị ảnh đại diện trên public disk. Mật khẩu mọi tài khoản demo: `password`.
 3. `php artisan test` đang xanh (SQLite) **và** xanh trên MySQL DB test. Mỗi bước dưới đây kết thúc bằng việc chạy lại cả hai.
 
 ## 1. CÁCH LÀM VIỆC

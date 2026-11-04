@@ -75,6 +75,7 @@ Quy tắc: Controller không chứa luật nghiệp vụ; View không truy vấn
 - **Chặn kép** cho luật quan trọng (M7_QĐ1, M7_QĐ2, M8, M11…): vừa ở tầng ứng dụng (FormRequest/Service/Policy) vừa ở tầng CSDL (UNIQUE/CHECK/trigger đã có trong schema). Tầng ứng dụng phải trả thông báo thân thiện; tầng CSDL là lưới an toàn cuối.
 - **Transaction + `lockForUpdate()`** ở mọi thao tác đọc-rồi-ghi có nguy cơ race condition (M2, M6, M7, M8).
 - **Mã HTTP nhất quán:** chưa đăng nhập → redirect login; sai quyền/sai chi hội/sai cấp → **403**; sai trạng thái nghiệp vụ/ngoài thời gian/trùng phiếu → **422** (hoặc redirect kèm lỗi với form HTML); không tồn tại → 404.
+- **Hồ sơ thuộc người khác:** khi thành viên truy cập hoặc gửi thay đổi trên hồ sơ bảo lãnh không thuộc mình (M13), trả **404** để không tiết lộ sự tồn tại của hồ sơ; dùng nhất quán ở controller và service.
 - **Bảo mật:** không hardcode secret; luôn dùng mass-assignment có kiểm soát (`$fillable` tường minh, KHÔNG đưa `vai_tro`, `nguon_tao`, `trang_thai` duyệt vào `$fillable` của form công khai); CSRF mặc định; escape output Blade (`{{ }}`); không log mật khẩu/token.
 - **Thông báo lỗi bằng tiếng Việt**, đặt trong `lang/vi` hoặc hằng message tập trung; không lộ stack trace.
 - **Không có đăng ký tài khoản tự do.** Không tạo route/controller đăng ký.
