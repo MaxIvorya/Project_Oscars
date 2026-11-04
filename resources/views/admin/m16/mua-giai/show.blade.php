@@ -51,18 +51,22 @@
     @endif
     <div class="bang-cuon">
         <table>
-            <thead><tr><th>Hạng mục</th><th>Loại</th><th>Phạm vi</th><th>Số đề cử</th><th></th></tr></thead>
+            <thead><tr><th>Hạng mục</th><th>Loại</th><th>Phạm vi</th><th class="so">Số đề cử</th><th class="so">Số phiếu</th><th></th></tr></thead>
             <tbody>
             @forelse ($muaGiai->hangMucGiais as $hangMuc)
                 <tr>
                     <td>{{ $hangMuc->ten_hang_muc }}</td>
                     <td>{{ $hangMuc->loai_hang_muc === 'nghe_si' ? 'Nghệ sĩ' : 'Phim' }}</td>
                     <td>{{ $hangMuc->la_toan_the ? 'Toàn thể' : $hangMuc->chiHoi?->ten_chi_hoi }}</td>
-                    <td>{{ $hangMuc->deCus->count() }}</td>
+                    <td class="so">{{ $hangMuc->deCus->count() }}</td>
+                    <td class="so">
+                        <a href="{{ route('admin.m16.tong-hop', $muaGiai) }}#hang-muc-{{ $hangMuc->ma_hang_muc }}">{{ $hangMuc->phieu_so_loai + $hangMuc->phieu_chung_ket }}</a>
+                        <small class="chu-phu">Sơ loại {{ $hangMuc->phieu_so_loai }} · Chung kết {{ $hangMuc->phieu_chung_ket }}</small>
+                    </td>
                     <td><a href="{{ route('admin.m16.de-cu.index', $hangMuc) }}">Xem đề cử</a></td>
                 </tr>
             @empty
-                <tr><td colspan="5">Chưa có hạng mục.</td></tr>
+                <tr><td colspan="6">Chưa có hạng mục.</td></tr>
             @endforelse
             </tbody>
         </table>

@@ -3,7 +3,9 @@
 @section('tieu-de', $muaGiai->ten_mua_giai.' — Hạng mục')
 
 @section('noi-dung')
+<p><a href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
 <h1>{{ $muaGiai->ten_mua_giai }} — Hạng mục</h1>
+
 @include('partials.thong-bao')
 @if ($muaGiai->trang_thai === 'da_ket_thuc')
     <p>Mùa giải đã kết thúc — chỉ xem.</p>

@@ -40,3 +40,12 @@ th, td { padding: .7rem; border-bottom: 1px solid #dfe5ef; text-align: left; ver
     .menu ul.menu-mo { display: grid; }
     .noi-dung, .khung-khach { width: min(100% - 1rem, 72rem); padding: 1rem 0; }
 }
+
+.so { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.chu-phu { display: block; color: #667085; font-size: .85rem; font-weight: 400; }
+h2 .chu-phu { margin-top: .2rem; }
+.khoi-phieu { margin: 1.5rem 0; }
+.bang-phieu th { background: #f8fafc; font-size: .85rem; color: #475467; }
+.bang-phieu tbody tr:hover { background: #f8fafc; }
+.bang-phieu .dong-thang, .bang-phieu .dong-thang:hover { background: #fff8e1; }
+.huy-hieu-thang { background: #fdd663; color: #5b3d00; font-weight: 700; }

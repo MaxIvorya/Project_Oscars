@@ -40,6 +40,10 @@ class M16Controller extends Controller
 
         return view('admin.m16.mua-giai.show', [
             'muaGiai' => $muaGiai->load([
+                'hangMucGiais' => fn ($query) => $query->withCount([
+                    'phieuBauCus as phieu_so_loai' => fn ($phieu) => $phieu->where('vong_bau', 'so_loai'),
+                    'phieuBauCus as phieu_chung_ket' => fn ($phieu) => $phieu->where('vong_bau', 'chung_ket'),
+                ]),
                 'hangMucGiais.chiHoi',
                 'hangMucGiais.deCus.phim',
                 'hangMucGiais.deCus.ngheSi',
