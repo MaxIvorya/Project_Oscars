@@ -1,5 +1,9 @@
+@extends('layouts.app')
+
+@section('tieu-de', 'Tổng hợp phiếu')
+
+@section('noi-dung')
 <h1>Tổng hợp phiếu {{ $muaGiai->ten_mua_giai }}</h1>
-@include('partials.thong-bao')
 <p>Chỉ Super Admin được đánh dấu chính thức/người thắng.</p>
 <p><a href="{{ route('admin.m16.hang-muc.index', $muaGiai) }}">Quay lại danh sách hạng mục</a></p>
 <table>
@@ -24,3 +28,4 @@
         @endforeach
     </tbody>
 </table>
+@endsection
