@@ -61,7 +61,7 @@
             <main class="app-content" id="noi-dung-chinh" tabindex="-1">
                 @include('partials.thong-bao')
                 @yield('noi-dung')
-                <footer class="app-footer"><span>SCAROS CINEMA SOCIETY</span><span>Một nơi dành cho những câu chuyện đáng nhớ.</span></footer>
+                <footer class="app-footer"><span>SCAROS CINEMA SOCIETY</span><span>Mô hình học thuật độc lập, không đại diện AMPAS.</span></footer>
             </main>
         </div>
     </div>

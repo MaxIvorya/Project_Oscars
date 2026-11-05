@@ -47,6 +47,20 @@ class DeCuService
     {
         $vaiTro = config('hang_muc_vai_tro.'.$hangMuc->ten_hang_muc);
         if ($vaiTro === null) {
+            $lower = mb_strtolower($hangMuc->ten_hang_muc);
+            if (str_contains($lower, 'đạo diễn') || str_contains($lower, 'dao dien')) {
+                $vaiTro = 'dao_dien';
+            } elseif (str_contains($lower, 'nam') && (str_contains($lower, 'chính') || str_contains($lower, 'chinh'))) {
+                $vaiTro = 'nam_chinh';
+            } elseif (str_contains($lower, 'nữ') && (str_contains($lower, 'chính') || str_contains($lower, 'chinh'))) {
+                $vaiTro = 'nu_chinh';
+            } elseif (str_contains($lower, 'nam') && (str_contains($lower, 'phụ') || str_contains($lower, 'phu'))) {
+                $vaiTro = 'nam_phu';
+            } elseif (str_contains($lower, 'nữ') && (str_contains($lower, 'phụ') || str_contains($lower, 'phu'))) {
+                $vaiTro = 'nu_phu';
+            }
+        }
+        if ($vaiTro === null) {
             return collect();
         }
 

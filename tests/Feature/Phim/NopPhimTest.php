@@ -30,6 +30,7 @@ class NopPhimTest extends TestCase
             'ma_mua_giai' => $season->getKey(),
             'ten_phim' => 'Phim kiểm thử',
             'nam_phat_hanh' => 2026,
+            'tom_tat' => 'Tóm tắt nội dung phim kiểm thử.',
             'e_kip' => 'Đạo diễn kiểm thử',
             'duong_dan_video' => 'https://example.test/video',
         ])->assertRedirect(route('member.phim.index'))
@@ -40,6 +41,7 @@ class NopPhimTest extends TestCase
             'ma_nguoi_nop' => $member->getKey(),
             'trang_thai' => 'cho_duyet_chi_hoi',
             'ten_phim' => 'Phim kiểm thử',
+            'tom_tat' => 'Tóm tắt nội dung phim kiểm thử.',
         ]);
         Carbon::setTestNow();
     }

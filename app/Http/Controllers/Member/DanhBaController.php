@@ -15,7 +15,7 @@ class DanhBaController extends Controller
         $validated = $request->validate([
             'chi_hoi' => ['nullable', 'integer', 'exists:chihoi,ma_chi_hoi'],
         ]);
-        $chiHois = ChiHoi::orderBy('ten_chi_hoi')->get(['ma_chi_hoi', 'ten_chi_hoi']);
+        $chiHois = ChiHoi::canonical()->orderBy('ten_chi_hoi')->get(['ma_chi_hoi', 'ten_chi_hoi']);
         $thanhViens = ThanhVien::query()
             ->where('trang_thai', 'hoat_dong')
             ->when(
