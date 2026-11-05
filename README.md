@@ -89,6 +89,8 @@ php artisan key:generate
 php artisan migrate --seed
 php artisan storage:link
 ```
+php artisan storage:link
+```
 
 Khi đã cài xong, lần sau chỉ cần chạy:
 ```powershell

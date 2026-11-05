@@ -56,15 +56,20 @@ final class DieuHuong
             ]]);
         } elseif ($vaiTro === 'quan_tri_he_thong') {
             $menuChung[0]['nhan'] = 'Mùa giải & hạng mục & đề cử';
-            // $menuChung[] = [
-            //     'nhan' => 'Tổng hợp phiếu mùa giải',
-            //     'route' => 'admin.m16.mua-giai.index',
-            //     'kich_hoat' => ['admin.m16.tong-hop'],
-            // ];
+            $menuChung[] = [
+                'nhan' => '24 Hạng mục mẫu Oscar',
+                'route' => 'admin.hang-muc-mau.index',
+                'kich_hoat' => ['admin.hang-muc-mau.*'],
+            ];
             $menuChung[] = [
                 'nhan' => 'Loại sự kiện',
                 'route' => 'admin.su-kien.loai.index',
                 'kich_hoat' => ['admin.su-kien.loai.*'],
+            ];
+            $menuChung[] = [
+                'nhan' => 'Quản lý bài viết',
+                'route' => 'admin.bai-viet.index',
+                'kich_hoat' => ['admin.bai-viet.*'],
             ];
         }
 

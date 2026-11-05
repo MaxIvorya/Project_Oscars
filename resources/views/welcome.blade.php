@@ -30,6 +30,9 @@
 
             <nav class="main-nav" id="main-nav" aria-label="Điều hướng chính">
                 <a class="nav-link is-active" href="#trang-chu" aria-current="page">Trang chủ</a>
+                <a class="nav-link" href="{{ route('public.gioi-thieu') }}">19 Chi hội</a>
+                <a class="nav-link" href="{{ route('public.giai-thuong') }}">Awards Database</a>
+                <a class="nav-link" href="{{ route('public.tin-tuc.index') }}">Tin tức</a>
                 <a class="nav-link" href="#phim-noi-bat">Khám phá phim</a>
                 <a class="nav-link" href="#mua-giai">Mùa giải 2026</a>
                 <a class="nav-link" href="#ve-scaros">Về Scaros</a>
@@ -192,7 +195,7 @@
     <footer class="site-footer">
         <a class="brand footer-brand" href="#trang-chu" aria-label="Scaros — Lên đầu trang"><span class="brand-mark" aria-hidden="true">S</span><span class="brand-word">scaros<span class="brand-period">.</span><small>CINEMA SOCIETY</small></span></a>
         <span class="footer-note">Một nơi dành cho những câu chuyện đáng nhớ.</span>
-        <div class="footer-links"><a href="#phim-noi-bat">Khám phá</a><a href="#mua-giai">Mùa giải</a><a href="mailto:hello@scaros.vn">Liên hệ</a></div>
+        <div class="footer-links"><a href="#phim-noi-bat">Khám phá</a><a href="#mua-giai">Mùa giải</a><a href="{{ route('public.gioi-thieu') }}">Giới thiệu Scaros</a></div>
         <span class="copyright">© 2026 SCAROS CINEMA SOCIETY</span>
     </footer>
 </body>

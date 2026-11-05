@@ -20,8 +20,11 @@
         <input id="ten_phim" name="ten_phim" value="{{ old('ten_phim') }}" maxlength="200" required>
         @error('ten_phim') <p>{{ $message }}</p> @enderror
         <label for="nam_phat_hanh">Năm phát hành</label>
-        <input id="nam_phat_hanh" name="nam_phat_hanh" type="date" min="1888" max="{{ now()->year + 1 }}" step="1" value="{{ old('nam_phat_hanh') }}" required>
+        <input id="nam_phat_hanh" name="nam_phat_hanh" type="number" min="1888" max="{{ now()->year + 1 }}" step="1" value="{{ old('nam_phat_hanh') }}" required>
         @error('nam_phat_hanh') <p>{{ $message }}</p> @enderror
+        <label for="tom_tat">Tóm tắt nội dung</label>
+        <textarea id="tom_tat" name="tom_tat" maxlength="5000" rows="4">{{ old('tom_tat') }}</textarea>
+        @error('tom_tat') <p>{{ $message }}</p> @enderror
         <fieldset>
             <legend>Thông tin ê-kíp</legend>
             <label for="the_loai">Thể loại</label>
@@ -44,8 +47,8 @@
                 @error($truong) <p>{{ $message }}</p> @enderror
             @endforeach
         </fieldset>
-        <label for="duong_dan_video">Đường dẫn video</label>
-        <input id="duong_dan_video" name="duong_dan_video" value="{{ old('duong_dan_video') }}" maxlength="255">
+        <label for="duong_dan_video">Đường dẫn trailer YouTube hoặc video</label>
+        <input id="duong_dan_video" name="duong_dan_video" type="url" value="{{ old('duong_dan_video') }}" maxlength="255" placeholder="https://www.youtube.com/watch?v=...">
         @error('duong_dan_video') <p>{{ $message }}</p> @enderror
         <button type="submit">Gửi hồ sơ</button>
     </form>

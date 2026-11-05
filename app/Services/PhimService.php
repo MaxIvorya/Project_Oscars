@@ -42,6 +42,7 @@ class PhimService
                 'ma_mua_giai' => $muaGiai->getKey(),
                 'ten_phim' => $duLieu['ten_phim'],
                 'nam_phat_hanh' => $duLieu['nam_phat_hanh'],
+                'tom_tat' => $duLieu['tom_tat'] ?? null,
                 'e_kip' => filled($duLieu['the_loai'] ?? null)
                     ? 'Thể loại: '.$duLieu['the_loai']
                     : null,

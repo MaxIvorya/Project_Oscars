@@ -2,18 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\ChiHoi;
 use Illuminate\Database\Seeder;
+use App\Models\ChiHoi;
 
 class ChiHoiSeeder extends Seeder
 {
     public function run(): void
     {
-        foreach (range('A', 'N') as $letter) {
-            ChiHoi::create([
-                'ten_chi_hoi' => "Chi hội {$letter}",
-                'mo_ta' => "Chi hội mẫu {$letter}",
-            ]);
+        foreach (config('chi_hoi') as $ch) {
+            ChiHoi::updateOrCreate(
+                ['ten_chi_hoi' => $ch['ten_chi_hoi']],
+                ['mo_ta' => $ch['mo_ta']]
+            );
         }
     }
 }
