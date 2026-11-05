@@ -17,15 +17,19 @@
     const applyTheme = (theme) => {
         const isLight = theme === 'light';
         root.dataset.theme = isLight ? 'light' : 'dark';
-        themeToggle.setAttribute('aria-pressed', String(isLight));
-        themeToggle.setAttribute('aria-label', isLight ? 'Bật giao diện tối' : 'Bật giao diện sáng');
-        themeToggle.title = isLight ? 'Bật giao diện tối' : 'Bật giao diện sáng';
-        themeColor.content = isLight ? '#f6f3ed' : '#090b10';
+        themeToggle?.setAttribute('aria-pressed', String(isLight));
+        themeToggle?.setAttribute('aria-label', isLight ? 'Bật giao diện tối' : 'Bật giao diện sáng');
+        if (themeToggle) {
+            themeToggle.title = isLight ? 'Bật giao diện tối' : 'Bật giao diện sáng';
+        }
+        if (themeColor) {
+            themeColor.content = isLight ? '#f6f3ed' : '#090b10';
+        }
     };
 
     applyTheme(root.dataset.theme);
 
-    themeToggle.addEventListener('click', () => {
+    themeToggle?.addEventListener('click', () => {
         const theme = root.dataset.theme === 'light' ? 'dark' : 'light';
         applyTheme(theme);
 
@@ -44,73 +48,78 @@
         .toLocaleLowerCase('vi')
         .trim();
 
-    const getActiveFilter = () => filterButtons.find((button) => button.getAttribute('aria-pressed') === 'true')?.dataset.filter ?? 'all';
+    if (searchInput && sortSelect && movieGrid && movieResults && emptyState) {
+        const getActiveFilter = () => filterButtons.find((button) => button.getAttribute('aria-pressed') === 'true')?.dataset.filter ?? 'all';
+        const updateMovies = () => {
+            const query = normalize(searchInput.value);
+            const activeFilter = getActiveFilter();
+            const visibleCards = movieCards.filter((card) => {
+                const matchesQuery = normalize(`${card.dataset.search} ${card.innerText}`).includes(query);
+                const matchesFilter = activeFilter === 'all'
+                    || (activeFilter === 'top' && Number(card.dataset.score) >= 9)
+                    || (activeFilter === 'nominated' && card.dataset.nominated === 'true')
+                    || (activeFilter === 'recent' && Number(card.dataset.year) >= 2024);
 
-    const updateMovies = () => {
-        const query = normalize(searchInput.value);
-        const activeFilter = getActiveFilter();
-        const visibleCards = movieCards.filter((card) => {
-            const matchesQuery = normalize(`${card.dataset.search} ${card.innerText}`).includes(query);
-            const matchesFilter = activeFilter === 'all'
-                || (activeFilter === 'top' && Number(card.dataset.score) >= 9)
-                || (activeFilter === 'nominated' && card.dataset.nominated === 'true')
-                || (activeFilter === 'recent' && Number(card.dataset.year) >= 2024);
+                return matchesQuery && matchesFilter;
+            });
 
-            return matchesQuery && matchesFilter;
+            const sortBy = sortSelect.value;
+            visibleCards.sort((first, second) => {
+                if (sortBy === 'title') {
+                    return first.querySelector('h3').textContent.localeCompare(second.querySelector('h3').textContent, 'vi');
+                }
+
+                const difference = Number(second.dataset[sortBy]) - Number(first.dataset[sortBy]);
+                return difference || first.querySelector('h3').textContent.localeCompare(second.querySelector('h3').textContent, 'vi');
+            });
+
+            visibleCards.forEach((card) => movieGrid.append(card));
+            movieCards.forEach((card) => {
+                card.hidden = !visibleCards.includes(card);
+            });
+
+            movieResults.textContent = query || activeFilter !== 'all'
+                ? `Hiển thị ${visibleCards.length}/${movieCards.length} phim.`
+                : `${movieCards.length} phim nổi bật.`;
+            emptyState.hidden = visibleCards.length > 0;
+        };
+
+        filterButtons.forEach((button) => {
+            button.addEventListener('click', () => {
+                filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
+                updateMovies();
+            });
         });
 
-        const sortBy = sortSelect.value;
-        visibleCards.sort((first, second) => {
-            if (sortBy === 'title') {
-                return first.querySelector('h3').textContent.localeCompare(second.querySelector('h3').textContent, 'vi');
-            }
-
-            const difference = Number(second.dataset[sortBy]) - Number(first.dataset[sortBy]);
-            return difference || first.querySelector('h3').textContent.localeCompare(second.querySelector('h3').textContent, 'vi');
-        });
-
-        visibleCards.forEach((card) => movieGrid.append(card));
-        movieCards.forEach((card) => {
-            card.hidden = !visibleCards.includes(card);
-        });
-
-        movieResults.textContent = query || activeFilter !== 'all'
-            ? `Hiển thị ${visibleCards.length}/${movieCards.length} phim.`
-            : `${movieCards.length} phim nổi bật.`;
-        emptyState.hidden = visibleCards.length > 0;
-    };
-
-    filterButtons.forEach((button) => {
-        button.addEventListener('click', () => {
-            filterButtons.forEach((item) => item.setAttribute('aria-pressed', String(item === button)));
-            updateMovies();
-        });
-    });
-
-    searchInput.addEventListener('input', updateMovies);
-    sortSelect.addEventListener('change', updateMovies);
-    updateMovies();
+        searchInput.addEventListener('input', updateMovies);
+        sortSelect.addEventListener('change', updateMovies);
+        updateMovies();
+    }
 
     const closeMenu = () => {
-        const focusMenuToggle = mainNav.contains(document.activeElement);
-        menuToggle.setAttribute('aria-expanded', 'false');
-        menuToggle.setAttribute('aria-label', 'Mở menu điều hướng');
-        mainNav.classList.remove('is-open');
+        const focusMenuToggle = mainNav?.contains(document.activeElement);
+        menuToggle?.setAttribute('aria-expanded', 'false');
+        menuToggle?.setAttribute('aria-label', 'Mở menu điều hướng');
+        mainNav?.classList.remove('is-open');
         if (focusMenuToggle) {
             menuToggle.focus();
         }
     };
 
     const closeSearch = (restoreFocus = false) => {
-        searchToggle.setAttribute('aria-expanded', 'false');
-        searchToggle.setAttribute('aria-label', 'Mở tìm kiếm');
-        searchBox.classList.remove('is-open');
+        searchToggle?.setAttribute('aria-expanded', 'false');
+        searchToggle?.setAttribute('aria-label', 'Mở tìm kiếm');
+        searchBox?.classList.remove('is-open');
         if (restoreFocus && document.activeElement === searchInput) {
             searchToggle.focus();
         }
     };
 
     const openSearch = () => {
+        if (!searchToggle || !searchBox || !searchInput) {
+            return;
+        }
+
         closeMenu();
         searchToggle.setAttribute('aria-expanded', 'true');
         searchToggle.setAttribute('aria-label', 'Đóng tìm kiếm');
@@ -118,7 +127,7 @@
         searchInput.focus();
     };
 
-    searchToggle.addEventListener('click', () => {
+    searchToggle?.addEventListener('click', () => {
         if (searchToggle.getAttribute('aria-expanded') === 'true') {
             closeSearch(true);
         } else {
@@ -126,7 +135,11 @@
         }
     });
 
-    menuToggle.addEventListener('click', () => {
+    menuToggle?.addEventListener('click', () => {
+        if (!mainNav) {
+            return;
+        }
+
         const isOpen = menuToggle.getAttribute('aria-expanded') === 'true';
         closeSearch();
         menuToggle.setAttribute('aria-expanded', String(!isOpen));
@@ -134,7 +147,7 @@
         mainNav.classList.toggle('is-open', !isOpen);
     });
 
-    mainNav.querySelectorAll('a').forEach((link) => {
+    mainNav?.querySelectorAll('a').forEach((link) => {
         link.addEventListener('click', () => {
             mainNav.querySelectorAll('a').forEach((item) => {
                 item.classList.toggle('is-active', item === link);
@@ -149,14 +162,14 @@
     });
 
     document.addEventListener('click', (event) => {
-        if (menuToggle.getAttribute('aria-expanded') === 'true'
-            && !mainNav.contains(event.target)
+        if (menuToggle?.getAttribute('aria-expanded') === 'true'
+            && !mainNav?.contains(event.target)
             && !menuToggle.contains(event.target)) {
             closeMenu();
         }
 
-        if (searchToggle.getAttribute('aria-expanded') === 'true'
-            && !searchBox.contains(event.target)
+        if (searchToggle?.getAttribute('aria-expanded') === 'true'
+            && !searchBox?.contains(event.target)
             && !searchToggle.contains(event.target)) {
             closeSearch();
         }
@@ -168,8 +181,8 @@
             closeSearch(true);
         }
 
-        if ((event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName))
-            || ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k')) {
+        if (searchToggle && ((event.key === '/' && !['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName))
+            || ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k'))) {
             event.preventDefault();
             openSearch();
         }

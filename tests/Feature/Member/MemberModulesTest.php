@@ -81,6 +81,18 @@ class MemberModulesTest extends TestCase
             ->assertDontSee('ma_tai_khoan');
     }
 
+    public function test_directory_profile_uses_initials_when_avatar_file_is_missing(): void
+    {
+        [$account, $member] = $this->taoTaiKhoan();
+        $member->update(['anh_dai_dien' => 'anh-dai-dien/khong-ton-tai.png']);
+        $this->dangNhap($account);
+
+        $this->get(route('member.danh-ba.show', $member))
+            ->assertOk()
+            ->assertSee('onerror=', false)
+            ->assertSee(mb_substr($member->ho_ten, 0, 1));
+    }
+
     public function test_screening_room_lists_only_approved_films_in_current_season_and_logs_view(): void
     {
         Carbon::setTestNow('2026-11-01 12:00:00');

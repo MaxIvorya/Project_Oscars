@@ -29,7 +29,7 @@ class BaoLanhController extends Controller
     {
         return view('member.bao-lanh.form', [
             'hoSo' => null,
-            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
+            'chiHois' => ChiHoi::canonical()->orderBy('ten_chi_hoi')->get(),
         ]);
     }
 
@@ -55,7 +55,7 @@ class BaoLanhController extends Controller
 
         return view('member.bao-lanh.form', [
             'hoSo' => $hoSo,
-            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
+            'chiHois' => ChiHoi::canonical()->orderBy('ten_chi_hoi')->get(),
         ]);
     }
 

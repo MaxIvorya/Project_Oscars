@@ -48,7 +48,7 @@ class M16Controller extends Controller
                 'hangMucGiais.deCus.phim',
                 'hangMucGiais.deCus.ngheSi',
             ]),
-            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
+            'chiHois' => ChiHoi::canonical()->orderBy('ten_chi_hoi')->get(),
             'coQuyenGhi' => auth()->user()->vaiTroQuanTri() === 'quan_tri_he_thong',
         ]);
     }
@@ -84,7 +84,7 @@ class M16Controller extends Controller
         return view('admin.m16.hang-muc.index', [
             'muaGiai' => $muaGiai,
             'hangMucs' => $muaGiai->hangMucGiais()->withCount('deCus')->with('chiHoi')->get(),
-            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
+            'chiHois' => ChiHoi::canonical()->orderBy('ten_chi_hoi')->get(),
             'coQuyenGhi' => auth()->user()->vaiTroQuanTri() === 'quan_tri_he_thong',
         ]);
     }
@@ -95,7 +95,7 @@ class M16Controller extends Controller
 
         return view('admin.m16.hang-muc.create', [
             'muaGiai' => $muaGiai,
-            'chiHois' => ChiHoi::orderBy('ten_chi_hoi')->get(),
+            'chiHois' => ChiHoi::canonical()->orderBy('ten_chi_hoi')->get(),
         ]);
     }
 
