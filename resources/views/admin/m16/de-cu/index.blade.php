@@ -3,6 +3,7 @@
 @section('tieu-de', $hangMuc->ten_hang_muc.' — Đề cử')
 
 @section('noi-dung')
+<p><a class="quay-lai" href="{{ route('admin.m16.mua-giai.index') }}">← Danh sách mùa giải</a></p>
 <h1>{{ $hangMuc->ten_hang_muc }} — Đề cử</h1>
 @include('partials.thong-bao')
 <p>Đánh dấu <strong>Người thắng</strong> trước khi đóng mùa giải.</p>

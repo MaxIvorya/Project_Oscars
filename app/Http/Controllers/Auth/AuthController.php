@@ -17,6 +17,9 @@ use Illuminate\View\View;
 
 class AuthController extends Controller
 {
+    private const COOKIE_GHI_NHO = 'scaros_identifier';
+
+    private const COOKIE_GHI_NHO_PHUT = 60 * 24 * 30;
     public function showLogin(): View|RedirectResponse
     {
         if (Auth::check()) {
@@ -28,27 +31,29 @@ class AuthController extends Controller
             Auth::logout();
         }
 
-        return view('auth.login');
+        return view('auth.login', [
+            'identifierDaNho' => request()->cookie(self::COOKIE_GHI_NHO),
+        ]);
     }
 
     public function login(LoginRequest $request, GioiHanPhienService $phienService): RedirectResponse
     {
         $identifier = trim($request->string('identifier')->toString());
-        $key = mb_strtolower($identifier).'|'.$request->ip();
+        $key = mb_strtolower($identifier) . '|' . $request->ip();
 
         if (RateLimiter::tooManyAttempts($key, 5)) {
             return redirect()->route('dang-nhap')->withInput($request->only('identifier'))
                 ->withErrors([
                     'identifier' => 'Bạn đã thử quá nhiều lần. Vui lòng thử lại sau '
-                        .RateLimiter::availableIn($key).' giây.',
+                        . RateLimiter::availableIn($key) . ' giây.',
                 ], 'login');
         }
 
         $taiKhoan = str_contains($identifier, '@')
             ? TaiKhoan::where('email', $identifier)->first()
-            : TaiKhoan::whereHas('thanhVien', fn ($query) => $query->where('ma_hoi_vien', $identifier))->first();
+            : TaiKhoan::whereHas('thanhVien', fn($query) => $query->where('ma_hoi_vien', $identifier))->first();
 
-        if ($taiKhoan === null || ! Hash::check($request->string('password')->toString(), $taiKhoan->mat_khau_hash)) {
+        if ($taiKhoan === null || !Hash::check($request->string('password')->toString(), $taiKhoan->mat_khau_hash)) {
             RateLimiter::hit($key, 60);
 
             return redirect()->route('dang-nhap')->withInput($request->only('identifier'))
@@ -73,7 +78,11 @@ class AuthController extends Controller
         $request->session()->regenerate();
         $request->session()->put('phien_token', $phien->session_token);
 
-        return redirect()->to($trangChu);
+        $cookie = $request->boolean('ghi_nho')
+            ? cookie(self::COOKIE_GHI_NHO, $identifier, self::COOKIE_GHI_NHO_PHUT, null, null, null, true, false, 'lax')
+            : cookie()->forget(self::COOKIE_GHI_NHO);
+
+        return redirect()->to($trangChu)->withCookie($cookie);
     }
 
     public function logout(Request $request): RedirectResponse
@@ -95,7 +104,7 @@ class AuthController extends Controller
     private function trangChuTheoVaiTro(TaiKhoan $taiKhoan): ?string
     {
         if ($taiKhoan->laMember()) {
-            if (! $taiKhoan->thanhVien()->exists()) {
+            if (!$taiKhoan->thanhVien()->exists()) {
                 return null;
             }
 

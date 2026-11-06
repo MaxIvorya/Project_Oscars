@@ -88,10 +88,10 @@ Route::middleware(['auth', 'phien.hop.le', 'vai.tro:member'])->group(function ()
 // Tuyến xem M16 chung cho cả 3 cấp Admin
 Route::middleware(['auth', 'phien.hop.le', 'vai.tro:quan_tri_he_thong,ban_dieu_hanh_chi_hoi,hoi_dong_quan_tri'])->group(function () {
     Route::get('/admin/m16/mua-giai', [M16Controller::class, 'muaGiaiIndex'])->name('admin.m16.mua-giai.index');
-    Route::get('/admin/m16/mua-giai/{muaGiai}', [M16Controller::class, 'muaGiaiShow'])->name('admin.m16.mua-giai.show');
-    Route::get('/admin/m16/mua-giai/{muaGiai}/hang-muc', [M16Controller::class, 'hangMucIndex'])->name('admin.m16.hang-muc.index');
+    Route::get('/admin/m16/mua-giai/{muaGiai}', [M16Controller::class, 'muaGiaiShow']) ->whereNumber('muaGiai')->name('admin.m16.mua-giai.show');
+    Route::get('/admin/m16/mua-giai/{muaGiai}/hang-muc', [M16Controller::class, 'hangMucIndex']) ->whereNumber('muaGiai')->name('admin.m16.hang-muc.index');
     Route::get('/admin/m16/hang-muc/{hangMuc}/de-cu', [M16Controller::class, 'deCuIndex'])->name('admin.m16.de-cu.index');
-    Route::get('/admin/m16/mua-giai/{muaGiai}/tong-hop', [M16Controller::class, 'tongHop'])->name('admin.m16.tong-hop');
+    Route::get('/admin/m16/mua-giai/{muaGiai}/tong-hop', [M16Controller::class, 'tongHop']) ->whereNumber('muaGiai')->name('admin.m16.tong-hop');
 });
 
 // Admin Chi hội (M6 cấp 1, M14 cấp 1)

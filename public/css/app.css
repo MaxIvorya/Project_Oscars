@@ -81,9 +81,8 @@ nav[aria-label="Các mục chi tiết mùa giải"] { display: flex; flex-wrap: 
 /* ---------- Tổng hợp phiếu ---------- */
 .khoi-phieu { margin: 1.5rem 0; }
 
-/* Class chỉ có màu trong bản gốc (đã bỏ rule, giữ lại tên để gắn style sau):
-   .nut-phu, .nut-nguy-hiem, .trang-thai-dang, .trang-thai-sap, .trang-thai-xong,
-   .bang-phieu, .dong-thang */
+.ghi-nho { display: flex; align-items: center; gap: .5rem; font-weight: 400; cursor: pointer; }
+.ghi-nho input[type="checkbox"] { width: auto; margin: 0; flex: none; }
 
 @media (max-width: 700px) {
     .thanh-tren { padding: 1rem; align-items: flex-start; flex-direction: column; }
